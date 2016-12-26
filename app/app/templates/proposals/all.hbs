@@ -1,0 +1,130 @@
+<div>
+  <h4>These are fairly small proposals</h4>
+  <table class="table table-striped">
+<!--    <caption>Running Small Grant Proposals</caption>-->
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Recipient</th>
+	    <th>Ends</th>
+        {{#if (eq currentUser.user.id "1")}}
+            <th>Moderated</th>
+        {{/if}}
+	    <th class="text-right">Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each smallGrantProposals as |proposal|}}
+      <tr>
+        <td>{{#link-to "proposals.show" proposal}}{{proposal.title}}{{/link-to}}</td>
+        <td>{{proposal.value}} &euro;</td>
+        <td>{{proposal.recipient}}</td>
+        <td>{{moment-from-now proposal.ends}}</td>
+        {{#if (eq currentUser.user.id "1")}}
+            {{#if (eq proposal.moderated true)}}
+                <td>Yes</td>
+            {{else}}
+                <td><b>No</b></td>
+            {{/if}}
+        {{/if}}
+        <td class="text-right">{{proposal.votes}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  {{activeSmallGrantCount}} small grant proposals
+  {{#if (eq currentUser.user.id "1")}}
+    ({{inactiveSmallGrantCount}} awaiting moderation)
+  {{/if}}
+</div>
+
+<br/>
+<hr/>
+<br/>
+
+<div>
+  <h4>But we got larger proposals, too!</h4>
+  <table class="table table-striped">
+<!--      <caption>Running Large Grant Proposals</caption>-->
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Recipient</th>
+	    <th>Ends</th>
+        {{#if (eq currentUser.user.id "1")}}
+            <th>Moderated</th>
+        {{/if}}
+	    <th class="text-right">Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each largeGrantProposals as |proposal|}}
+      <tr>
+        <td>{{#link-to "proposals.show" proposal}}{{proposal.title}}{{/link-to}}</td>
+        <td>{{proposal.value}} &euro;</td>
+        <td>{{proposal.recipient}}</td>
+        <td>{{moment-from-now proposal.ends}}</td>
+        {{#if (eq currentUser.user.id "1")}}
+            {{#if (eq proposal.moderated true)}}
+                <td>Yes</td>
+            {{else}}
+                <td><b>No</b></td>
+            {{/if}}
+        {{/if}}
+        <td class="text-right">{{proposal.votes}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  {{activeLargeGrantCount}} large grant proposals
+  {{#if (eq currentUser.user.id "1")}}
+    ({{inactiveLargeGrantCount}} awaiting moderation)
+  {{/if}}
+</div>
+
+<br/>
+<hr/>
+<br/>
+
+<div>
+  <h4>Look, some proposals are already finished!</h4>
+  <table class="table table-striped">
+<!--      <caption>Finished Grant Proposals</caption>-->
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Recipient</th>
+	    <th>Ends</th>
+        {{#if (eq currentUser.user.id "1")}}
+            <th>Moderated</th>
+        {{/if}}
+	    <th class="text-right">Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each finishedProposals as |proposal|}}
+      <tr>
+        <td>{{#link-to "proposals.show" proposal}}{{proposal.title}}{{/link-to}}</td>
+        <td>{{proposal.value}} &euro;</td>
+        <td>{{proposal.recipient}}</td>
+        <td>{{moment-from-now proposal.ends}}</td>
+        {{#if (eq currentUser.user.id "1")}}
+            {{#if (eq proposal.moderated true)}}
+                <td>Yes</td>
+            {{else}}
+                <td><b>No</b></td>
+            {{/if}}
+        {{/if}}
+        <td class="text-right">{{proposal.votes}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  {{finishedProposals.length}} finished proposals
+</div>

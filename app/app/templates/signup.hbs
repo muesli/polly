@@ -1,0 +1,32 @@
+<div class="jumbotron text-center">
+  <h2>Sign up</h2>
+  <p>Hey {{signupemail}}, secure your account with a password now</p>
+
+  <form {{action 'signup' on='submit'}}>
+
+  <div class="form-horizontal form-group form-group-lg row">
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+        <input type="hidden" name="token" value={{signuptoken}} />
+        {{input type="password" value=password class="form-control" placeholder="Pick a password" autofocus="autofocus"}}
+        <br/>
+        {{input type="password" value=confirmPassword class="form-control" placeholder="Password once more for confirmation"}}
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-offset-4 col-sm-4 col-md-4 col-md-offset-4">
+        <button type="submit" disabled={{isDisabled}} class="btn btn-primary btn-lg btn-block">Sign up</button>
+      </div>
+    </div>
+  </div>
+
+  </form>
+
+  {{#if errorMessage}}
+    <div class="alert alert-danger">{{errorMessage}}</div>
+  {{/if}}
+
+</div>

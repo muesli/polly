@@ -1,0 +1,38 @@
+<div class="jumbotron text-center">
+  <h2>Add a new Proposal</h2>
+  <p>Fill out the form below to add a new proposal</p>
+  <br/>
+
+  <div class="form-horizontal form-group form-group-lg row">
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+        {{input type="text" value=title class="form-control" placeholder="Please enter a title" autofocus="autofocus"}}
+        <br/>
+        {{textarea value=description class="form-control" placeholder="Please enter a description"}}
+        <br/>
+        {{input type="text" value=recipient class="form-control" placeholder="Who's the recipient"}}
+        <br/>
+        {{input type="text" value=value class="form-control" placeholder="The value in Euros"}}
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-offset-7 col-sm-4 col-md-3 col-md-offset-8">
+        <button disabled={{isDisabled}} {{action 'createProposal'}} class="btn btn-primary btn-lg btn-block">Add proposal</button>
+      </div>
+    </div>
+  </div>
+
+  {{#if progressMessage}}
+    <div class="alert alert-info">{{progressMessage}}</div>
+  {{/if}}
+  {{#if responseMessage}}
+    <div class="alert alert-success">{{responseMessage}}</div>
+  {{/if}}
+  {{#if errorMessage}}
+    <div class="alert alert-danger">{{errorMessage}}</div>
+  {{/if}}
+
+</div>

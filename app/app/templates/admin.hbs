@@ -1,0 +1,63 @@
+<div class="jumbotron text-center">
+  <h2>Admin</h2>
+  <p>Add an email below to send out an invitation</p>
+
+  <div class="form-horizontal form-group form-group-lg">
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+        {{input type="email" value=emailAddress class="form-control" placeholder="Please enter an e-mail address" autofocus="autofocus"}}
+      </div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+        {{input type="text" value=name class="form-control" placeholder="Name (optional)"}}
+      </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-offset-4 col-sm-4 col-md-4 col-md-offset-4">
+          <button disabled={{isDisabled}} {{action 'saveInvitation'}} class="btn btn-primary btn-lg btn-block">Send invitation</button>
+        </div>
+    </div>
+  </div>
+
+  {{#if progressMessage}}
+    <div class="alert alert-info">{{progressMessage}}</div>
+  {{/if}}
+  {{#if responseMessage}}
+    <div class="alert alert-success">{{responseMessage}}</div>
+  {{/if}}
+  {{#if errorMessage}}
+    <div class="alert alert-danger">{{errorMessage}}</div>
+  {{/if}}
+
+</div>
+
+<div>
+  <table class="table table-striped">
+    <caption>Invited users</caption>
+    <thead>
+      <tr>
+        <th>eMail</th>
+        <th class="text-right">Activated</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each users as |user|}}
+      <tr>
+        <td>{{user.email}}</td>
+        <td class="text-right">
+            {{#if user.activated}}
+                Yes
+            {{else}}
+                No
+            {{/if}}
+        </td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  {{users.length}} invites sent ({{activeUserCount}} activated, {{inactiveUserCount}} not activated yet)
+</div>
