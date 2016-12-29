@@ -113,7 +113,11 @@ func (r *SessionResource) Post(request *restful.Request, response *restful.Respo
 	} else {
 		user, err = context.(*PollyContext).GetUserByNameAndPassword(sps.Username, sps.Password)
 		if err != nil {
-			r.NotFound(request, response)
+			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
+				http.StatusUnauthorized,
+				false,
+				err,
+				"SessionResource PUT"))
 			return
 		}
 	}
