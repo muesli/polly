@@ -1,4 +1,3 @@
----
 language: node_js
 node_js:
   - "4"
@@ -11,6 +10,7 @@ cache:
     - $HOME/.cache # includes bowers cache
 
 before_install:
+  - cd app
   - npm config set spin false
   - npm install -g bower
   - bower --version
@@ -22,4 +22,5 @@ install:
   - bower install
 
 script:
+  - cd app
   - npm test
