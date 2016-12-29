@@ -1,9 +1,9 @@
 import Ember from 'ember';
 
-const { service } = Ember.inject;
+const { inject: { service } } = Ember;
 
 export default Ember.Route.extend({
-  session: Ember.inject.service('session'),
+  session: service('session'),
 
   model(params) {
       const session = this.get('session');
@@ -17,7 +17,7 @@ export default Ember.Route.extend({
           token: params.token
       }).then(users => {
           this.controllerFor("signup").set('signuptoken', params.token);
-          this.controllerFor("signup").set('signupemail', users.get("firstObject").get('email'))
+          this.controllerFor("signup").set('signupemail', users.get("firstObject").get('email'));
       });
   }
 });

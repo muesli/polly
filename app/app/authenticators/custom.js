@@ -34,7 +34,7 @@ export default Base.extend({
                         user_id: response.user_id
                     });
                 });
-            }, function(xhr, status, error) {
+            }, function(xhr) /*, status, error*/ {
                 var response = xhr.responseText;
                 Ember.run(function() {
                     reject(response);

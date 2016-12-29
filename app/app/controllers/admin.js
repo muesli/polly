@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
       const email = this.get('emailAddress');
       const newUser = this.store.createRecord('user', { email: email });
       newUser.save().then(
-        user => {
+        (/*user*/) => {
           this.set('responseMessage', `An invitation to ${this.get('emailAddress')} has been sent!`);
           this.set('progressMessage', '');
           this.set('emailAddress', '');

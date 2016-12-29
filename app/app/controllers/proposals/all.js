@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { inject: { service }, Component } = Ember;
+const { inject: { service } } = Ember;
 
 export default Ember.Controller.extend({
   currentUser: service('current-user'),

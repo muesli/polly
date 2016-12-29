@@ -23,9 +23,9 @@ export default Ember.Controller.extend({
       const description = this.get('description');
       const email = this.get('recipient');
       const value = this.get('value');
-      const newUser = this.store.createRecord('proposal', { title: title, description: description, recipient: email, value: value });
-      newUser.save().then(
-        user => {
+      const newProposal = this.store.createRecord('proposal', { title: title, description: description, recipient: email, value: value });
+      newProposal.save().then(
+        (/*proposal*/) => {
           this.set('responseMessage', `Your proposal is now awaiting moderation. Thank you!`);
           this.set('progressMessage', '');
           this.set('title', '');
