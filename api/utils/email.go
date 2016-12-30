@@ -12,12 +12,12 @@ import (
 
 var (
 	templates = make(map[string]config.EmailTemplate)
-	Settings  config.ConfigData
+	settings  config.Data
 )
 
 // SetupEmailTemplates compiles the email templates
-func SetupEmailTemplates(c config.ConfigData) {
-	Settings = c
+func SetupEmailTemplates(c config.Data) {
+	settings = c
 	templates["invitation"] = config.EmailTemplate{
 		Subject: c.App.Templates.Invitation.Subject,
 		Text:    "Hello {{.Email}}!\n\nYou've been invited to Polly!\nJoin here: " + c.Web.BaseURL + "signup/{{.AuthToken}}",
@@ -35,8 +35,8 @@ func SendInvitation(user *db.User) {
 	tmpl := templates["invitation"]
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", Settings.Connections.Email.ReplyTo)
-	m.SetHeader("To", Settings.Connections.Email.
+	m.SetHeader("From", settings.Connections.Email.ReplyTo)
+	m.SetHeader("To", settings.Connections.Email.
 		AdminEmail) // FIXME: change to user.Email in production
 	m.SetHeader("Subject", tmpl.Subject)
 	//	m.SetAddressHeader("Cc", "foo@foobar.com", "Joe")
@@ -51,8 +51,8 @@ func SendInvitation(user *db.User) {
 		return t.Execute(w, *user)
 	})
 
-	d := gomail.NewDialer(Settings.Connections.Email.SMTP.Server, Settings.Connections.Email.SMTP.Port,
-		Settings.Connections.Email.SMTP.User, Settings.Connections.Email.SMTP.Password)
+	d := gomail.NewDialer(settings.Connections.Email.SMTP.Server, settings.Connections.Email.SMTP.Port,
+		settings.Connections.Email.SMTP.User, settings.Connections.Email.SMTP.Password)
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}
@@ -63,8 +63,8 @@ func SendModerationRequest(proposal *db.Proposal) {
 	tmpl := templates["moderation_proposal"]
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", Settings.Connections.Email.ReplyTo)
-	m.SetHeader("To", Settings.Connections.Email.AdminEmail)
+	m.SetHeader("From", settings.Connections.Email.ReplyTo)
+	m.SetHeader("To", settings.Connections.Email.AdminEmail)
 	m.SetHeader("Subject", tmpl.Subject)
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
@@ -76,8 +76,8 @@ func SendModerationRequest(proposal *db.Proposal) {
 		return t.Execute(w, *proposal)
 	})
 
-	d := gomail.NewDialer(Settings.Connections.Email.SMTP.Server, Settings.Connections.Email.SMTP.Port,
-		Settings.Connections.Email.SMTP.User, Settings.Connections.Email.SMTP.Password)
+	d := gomail.NewDialer(settings.Connections.Email.SMTP.Server, settings.Connections.Email.SMTP.Port,
+		settings.Connections.Email.SMTP.User, settings.Connections.Email.SMTP.Password)
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}

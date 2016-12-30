@@ -12,7 +12,7 @@ import (
 
 // PollyContext is polly's central context
 type PollyContext struct {
-	Config config.ConfigData
+	Config config.Data
 
 	db        *sql.DB
 	Queries   []PgQuery

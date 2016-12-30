@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-// ConfigHandler is a clever config parser
-type ConfigHandler struct {
+// Handler is a clever config parser
+type Handler struct {
 	destroyTimeoutHandler chan bool
 	fileName              string
 	lastModificationTime  time.Time
@@ -19,12 +19,12 @@ type ConfigHandler struct {
 	unmarshalStruct       interface{}
 }
 
-// NewConfigHandler returns a new config handler
-func NewConfigHandler(fileName string, unmarshalStruct interface{}, notificationChannel chan interface{}) *ConfigHandler {
+// NewHandler returns a new config handler
+func NewHandler(fileName string, unmarshalStruct interface{}, notificationChannel chan interface{}) *Handler {
 	if _, err := os.Stat(fileName); err != nil {
 		return nil
 	}
-	ch := ConfigHandler{
+	ch := Handler{
 		fileName:             fileName,
 		lastModificationTime: time.Unix(0, 0),
 	}
@@ -39,7 +39,7 @@ func NewConfigHandler(fileName string, unmarshalStruct interface{}, notification
 }
 
 // SetRescanInterval controls how often the config should be rescanned
-func (ch *ConfigHandler) SetRescanInterval(interval uint16) {
+func (ch *Handler) SetRescanInterval(interval uint16) {
 	if ch.ticker != nil {
 		ch.ticker.Stop()
 		ch.destroyTimeoutHandler <- true
@@ -55,7 +55,7 @@ func (ch *ConfigHandler) SetRescanInterval(interval uint16) {
 }
 
 // Rescan parses the config file again
-func (ch *ConfigHandler) Rescan() {
+func (ch *Handler) Rescan() {
 	ch.lastReadValid = false
 	var fi os.FileInfo
 	var err error
@@ -80,16 +80,16 @@ func (ch *ConfigHandler) Rescan() {
 }
 
 // LastReadValid returns whether the last parse succeeded
-func (ch *ConfigHandler) LastReadValid() bool {
+func (ch *Handler) LastReadValid() bool {
 	return ch.lastReadValid
 }
 
 // CurrentData returns the current config data
-func (ch *ConfigHandler) CurrentData() interface{} {
+func (ch *Handler) CurrentData() interface{} {
 	return ch.unmarshalStruct
 }
 
-func (ch *ConfigHandler) handleTimeout() {
+func (ch *Handler) handleTimeout() {
 	for {
 		select {
 		case _ = <-ch.destroyTimeoutHandler:

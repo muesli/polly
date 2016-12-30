@@ -10,8 +10,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-// ConfigData holds all of polly's app settings
-type ConfigData struct {
+// Data holds all of polly's app settings
+type Data struct {
 	API struct {
 		BaseURL         string
 		PathPrefix      string
@@ -55,18 +55,7 @@ type PostgreSQLConnection struct {
 	SslMode  string
 }
 
-// EmailTemplate holds all values of an email template
-type EmailTemplate struct {
-	Subject string
-	Text    string
-	HTML    string
-}
-
-type Templates struct {
-	Invitation         EmailTemplate
-	ModerationProposal EmailTemplate
-}
-
+// EmailConfig contains all email settings
 type EmailConfig struct {
 	AdminEmail string
 	ReplyTo    string
@@ -86,9 +75,22 @@ type EmailConfig struct {
 	}
 }
 
+// EmailTemplate holds all values of one email template
+type EmailTemplate struct {
+	Subject string
+	Text    string
+	HTML    string
+}
+
+// Templates holds all email templates
+type Templates struct {
+	Invitation         EmailTemplate
+	ModerationProposal EmailTemplate
+}
+
 var (
-	configHandler *ConfigHandler
-	Settings      *ConfigData
+	// Settings contains the parsed configuration values
+	Settings *Data
 )
 
 // ParseSettings parses the config file
@@ -109,18 +111,19 @@ func ParseSettings() {
 	log.WithField("File", *configFile).Info("Using config file")
 
 	// Parse config file
-	configData := ConfigData{}
-	if configHandler = NewConfigHandler(*configFile, &configData, nil); configHandler == nil {
+	configData := Data{}
+	handler := NewHandler(*configFile, &configData, nil)
+	if handler == nil {
 		log.Fatal(errors.New("Config handler is nil, cannot continue"))
 	}
-	if !configHandler.LastReadValid() {
+	if !handler.LastReadValid() {
 		log.WithField(
 			"File",
 			*configFile,
 		).Fatal(errors.New("Did not get a valid config file"))
 	}
 
-	Settings = configHandler.CurrentData().(*ConfigData)
+	Settings = handler.CurrentData().(*Data)
 	//FIXME catch empty conf fields
 }
 
