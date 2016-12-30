@@ -8,9 +8,10 @@ import (
 
 	"github.com/muesli/polly/api/config"
 	"github.com/muesli/polly/api/db"
-	"github.com/muesli/polly/api/proposals"
-	"github.com/muesli/polly/api/users"
 	"github.com/muesli/polly/api/utils"
+
+	"github.com/muesli/polly/api/resources/proposals"
+	"github.com/muesli/polly/api/resources/users"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful/swagger"
