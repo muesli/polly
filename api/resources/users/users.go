@@ -1,7 +1,6 @@
 package users
 
 import (
-	_ "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )

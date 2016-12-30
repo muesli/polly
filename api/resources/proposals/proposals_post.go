@@ -21,6 +21,11 @@ type ProposalPostStruct struct {
 	} `json:"proposal"`
 }
 
+// PostAuthRequired returns true because all requests need authentication
+func (r *ProposalResource) PostAuthRequired() bool {
+	return true
+}
+
 // PostDoc returns the description of this API endpoint
 func (r *ProposalResource) PostDoc() string {
 	return "create a new proposal"
@@ -32,7 +37,12 @@ func (r *ProposalResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
+func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+	authUser := db.User{}
+	if auth, err := context.Authentication(request); err == nil {
+		authUser = auth.(db.User)
+	}
+
 	resp := ProposalResponse{}
 	resp.Init(context)
 
@@ -48,7 +58,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 	}
 
 	proposal := db.Proposal{
-		UserID:      auth.(db.User).ID,
+		UserID:      authUser.ID,
 		Title:       pps.Proposal.Title,
 		Description: pps.Proposal.Description,
 		Recipient:   pps.Proposal.Recipient,

@@ -15,6 +15,11 @@ type ProposalPutStruct struct {
 	ProposalPostStruct
 }
 
+// PutAuthRequired returns true because all requests need authentication
+func (r *ProposalResource) PutAuthRequired() bool {
+	return true
+}
+
 // PutDoc returns the description of this API endpoint
 func (r *ProposalResource) PutDoc() string {
 	return "update an existing proposal"
@@ -26,8 +31,9 @@ func (r *ProposalResource) PutParams() []*restful.Parameter {
 }
 
 // Put processes an incoming PUT (update) request
-func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(db.User).ID != 1 {
+func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+	auth, err := context.Authentication(request)
+	if err != nil || auth.(db.User).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,
@@ -40,7 +46,7 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 	resp.Init(context)
 
 	pps := ProposalPutStruct{}
-	err := request.ReadEntity(&pps)
+	err = request.ReadEntity(&pps)
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusBadRequest,

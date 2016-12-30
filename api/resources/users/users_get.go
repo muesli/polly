@@ -6,10 +6,19 @@ import (
 
 	"github.com/muesli/polly/api/db"
 
-	_ "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
+
+// GetAuthRequired returns true because all requests need authentication
+func (r *UserResource) GetAuthRequired() bool {
+	return false
+}
+
+// GetByIDsAuthRequired returns true because all requests need authentication
+func (r *UserResource) GetByIDsAuthRequired() bool {
+	return true
+}
 
 // GetDoc returns the description of this API endpoint
 func (r *UserResource) GetDoc() string {
@@ -26,16 +35,6 @@ func (r *UserResource) GetParams() []*restful.Parameter {
 
 // GetByIDs sends out all items matching a set of IDs
 func (r *UserResource) GetByIDs(context smolder.APIContext, request *restful.Request, response *restful.Response, ids []string) {
-	auth, err := context.Authentication(request)
-	if auth == nil || err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusUnauthorized,
-			false,
-			"Invalid accesstoken",
-			"UserResource GET"))
-		return
-	}
-
 	resp := UserResponse{}
 	resp.Init(context)
 

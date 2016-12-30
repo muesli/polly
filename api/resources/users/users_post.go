@@ -6,7 +6,6 @@ import (
 	"github.com/muesli/polly/api/db"
 	"github.com/muesli/polly/api/utils"
 
-	_ "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
@@ -16,6 +15,11 @@ type UserPostStruct struct {
 	User struct {
 		Email string `json:"email"`
 	} `json:"user"`
+}
+
+// PostAuthRequired returns true because all requests need authentication
+func (r *UserResource) PostAuthRequired() bool {
+	return true
 }
 
 // PostDoc returns the description of this API endpoint
@@ -29,8 +33,9 @@ func (r *UserResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *UserResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(db.User).ID != 1 {
+func (r *UserResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+	auth, err := context.Authentication(request)
+	if err != nil || auth.(db.User).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,
@@ -40,7 +45,7 @@ func (r *UserResource) Post(context smolder.APIContext, request *restful.Request
 	}
 
 	ups := UserPostStruct{}
-	err := request.ReadEntity(&ups)
+	err = request.ReadEntity(&ups)
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusBadRequest,

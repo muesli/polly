@@ -11,6 +11,16 @@ import (
 	"github.com/muesli/smolder"
 )
 
+// GetAuthRequired returns true because all requests need authentication
+func (r *ProposalResource) GetAuthRequired() bool {
+	return true
+}
+
+// GetByIDsAuthRequired returns true because all requests need authentication
+func (r *ProposalResource) GetByIDsAuthRequired() bool {
+	return true
+}
+
 // GetDoc returns the description of this API endpoint
 func (r *ProposalResource) GetDoc() string {
 	return "retrieve proposals"
@@ -28,16 +38,10 @@ func (r *ProposalResource) GetParams() []*restful.Parameter {
 
 // GetByIDs sends out all items matching a set of IDs
 func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful.Request, response *restful.Response, ids []string) {
-	auth, err := context.Authentication(request)
-	if auth == nil || err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusUnauthorized,
-			false,
-			"Invalid accesstoken",
-			"ProposalResource GET"))
-		return
+	authUser := db.User{}
+	if auth, err := context.Authentication(request); err == nil {
+		authUser = auth.(db.User)
 	}
-	authUser := auth.(db.User)
 
 	resp := ProposalResponse{}
 	resp.Init(context)
@@ -72,16 +76,10 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 
 // Get sends out items matching the query parameters
 func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Request, response *restful.Response, params map[string][]string) {
-	auth, err := context.Authentication(request)
-	if auth == nil || err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusUnauthorized,
-			false,
-			"Invalid accesstoken",
-			"ProposalResource GET"))
-		return
+	authUser := db.User{}
+	if auth, err := context.Authentication(request); err == nil {
+		authUser = auth.(db.User)
 	}
-	authUser := auth.(db.User)
 
 	granttype := params["granttype"]
 	ended := params["ended"]
