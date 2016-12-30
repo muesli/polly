@@ -1,13 +1,13 @@
-package main
+package db
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"reflect"
-	"strconv"
 	"strings"
 	"time"
+
+	"github.com/muesli/polly/api/config"
 
 	"github.com/lib/pq"
 	"github.com/muesli/cache2go"
@@ -16,7 +16,7 @@ import (
 
 var (
 	pgDB   *sql.DB
-	pgConn PostgreSQLConnection
+	pgConn config.PostgreSQLConnection
 
 	proposalsCache = cache2go.Cache("track")
 	usersCache     = cache2go.Cache("user")
@@ -25,48 +25,8 @@ var (
 	ErrInvalidID = errors.New("Invalid id")
 )
 
-// PostgreSQLConnection contains all of the db configuration values
-type PostgreSQLConnection struct {
-	User     string
-	Password string
-	Host     string
-	DbName   string
-	SslMode  string
-}
-
-// Marshal returns a "Connection String" with escaped values of all non-empty
-// fields as described at http://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING
-func (c *PostgreSQLConnection) Marshal() string {
-	val := reflect.ValueOf(c).Elem()
-	var out string
-	l := val.NumField()
-
-	r := strings.NewReplacer(`'`, `\'`, `\`, `\\`)
-
-	for i := 0; i < l; i++ {
-		var fieldValue string
-
-		switch f := val.Field(i).Interface().(type) {
-		case string:
-			fieldValue = f
-		case int:
-			fieldValue = strconv.Itoa(f)
-		}
-		fieldType := val.Type().Field(i).Name
-
-		if len(fieldValue) > 0 {
-			out += strings.ToLower(fieldType) + "='" + r.Replace(fieldValue) + "'"
-			if i < l {
-				out += " "
-			}
-		}
-	}
-
-	return out
-}
-
 // SetupPostgres sets the db configuration
-func SetupPostgres(pc PostgreSQLConnection) {
+func SetupPostgres(pc config.PostgreSQLConnection) {
 	pgConn = pc
 }
 

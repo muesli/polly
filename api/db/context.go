@@ -1,8 +1,10 @@
-package main
+package db
 
 import (
 	"database/sql"
 	"time"
+
+	"github.com/muesli/polly/api/config"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/muesli/smolder"
@@ -10,6 +12,8 @@ import (
 
 // PollyContext is polly's central context
 type PollyContext struct {
+	Config config.ConfigData
+
 	db        *sql.DB
 	Queries   []PgQuery
 	txIDCount int
@@ -40,7 +44,8 @@ type PgQuery struct {
 // NewAPIContext returns a new polly context
 func (context *PollyContext) NewAPIContext() smolder.APIContext {
 	ctx := &PollyContext{
-		db: GetDatabase(),
+		db:     GetDatabase(),
+		Config: context.Config,
 	}
 	return ctx
 }

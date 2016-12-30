@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"errors"
@@ -50,7 +50,7 @@ func (context *PollyContext) GetUserByNameAndPassword(name, password string) (Db
 		return DbUser{}, errors.New("Invalid username or password")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password+config.API.CryptPepper))
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password+context.Config.App.CryptPepper))
 	if err != nil {
 		return DbUser{}, errors.New("Invalid username or password")
 	}
@@ -115,7 +115,7 @@ func (user *DbUser) Update(context *PollyContext) error {
 
 // UpdatePassword sets a new user password in the database
 func (user *DbUser) UpdatePassword(context *PollyContext, password string) error {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password+config.API.CryptPepper), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password+context.Config.App.CryptPepper), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}

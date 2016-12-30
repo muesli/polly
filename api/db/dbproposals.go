@@ -1,6 +1,8 @@
-package main
+package db
 
-import "time"
+import (
+	"time"
+)
 
 // DbProposal represents the db schema of a proposal
 type DbProposal struct {
