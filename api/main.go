@@ -11,6 +11,7 @@ import (
 	"github.com/muesli/polly/api/utils"
 
 	"github.com/muesli/polly/api/resources/proposals"
+	"github.com/muesli/polly/api/resources/sessions"
 	"github.com/muesli/polly/api/resources/users"
 
 	log "github.com/Sirupsen/logrus"
@@ -83,7 +84,7 @@ func main() {
 			r.Register(wsContainer, smolderConfig, context)
 		}
 	}(
-		&SessionResource{},
+		&sessions.SessionResource{},
 		&users.UserResource{},
 		&proposals.ProposalResource{},
 	)
