@@ -14,7 +14,7 @@ func BuildURL(base string, items ...interface{}) string {
 
 	for _, item := range items {
 		switch v := item.(type) {
-		case db.DbProposal:
+		case db.Proposal:
 			proposal = url.QueryEscape(strconv.FormatInt(v.ID, 10))
 		case db.DbUser:
 			user = url.QueryEscape(v.Username)
@@ -22,7 +22,7 @@ func BuildURL(base string, items ...interface{}) string {
 	}
 
 	switch items[0].(type) {
-	case db.DbProposal:
+	case db.Proposal:
 		return base + "proposal/" + proposal
 	case db.DbUser:
 		return base + "user/" + user

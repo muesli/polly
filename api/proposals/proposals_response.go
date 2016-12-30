@@ -14,7 +14,7 @@ type ProposalResponse struct {
 	smolder.Response
 
 	Proposals []proposalInfoResponse `json:"proposals,omitempty"`
-	proposals []db.DbProposal
+	proposals []db.Proposal
 }
 
 type proposalInfoResponse struct {
@@ -40,7 +40,7 @@ func (r *ProposalResponse) Init(context smolder.APIContext) {
 }
 
 // AddProposal adds a proposal to the response
-func (r *ProposalResponse) AddProposal(proposal *db.DbProposal) {
+func (r *ProposalResponse) AddProposal(proposal *db.Proposal) {
 	r.proposals = append(r.proposals, *proposal)
 	r.Proposals = append(r.Proposals, prepareProposalResponse(r.Context, proposal))
 }
@@ -57,7 +57,7 @@ func (r *ProposalResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareProposalResponse(context smolder.APIContext, proposal *db.DbProposal) proposalInfoResponse {
+func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) proposalInfoResponse {
 	resp := proposalInfoResponse{
 		ID:          proposal.ID,
 		Title:       proposal.Title,

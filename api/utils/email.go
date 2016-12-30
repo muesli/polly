@@ -59,7 +59,7 @@ func SendInvitation(user *db.DbUser) {
 }
 
 // SendModerationRequest sends out an email to the admin, asking for moderation of a newly posted proposal
-func SendModerationRequest(proposal *db.DbProposal) {
+func SendModerationRequest(proposal *db.Proposal) {
 	tmpl := templates["moderation_proposal"]
 
 	m := gomail.NewMessage()
