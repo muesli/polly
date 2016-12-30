@@ -6,26 +6,29 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/muesli/polly/api/config"
+	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/proposals"
+	"github.com/muesli/polly/api/users"
+	"github.com/muesli/polly/api/utils"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/muesli/smolder"
 )
 
-var (
-	shutdownGracefully = false
-	requestIncChan     chan int
-)
-
-func handleSignals() {
-	pendingRequests := 0
+func handleSignals() (chan int, bool) {
 	sigChan := make(chan os.Signal, 1)
-	requestIncChan = make(chan int)
 	signal.Notify(sigChan, os.Interrupt, os.Kill)
 
-	boldGreen := string(byte(27)) + "[1;32m"
-	boldRed := string(byte(27)) + "[1;31m"
-	boldEnd := string(byte(27)) + "[0m"
+	shutdownGracefully := false
+	requestIncChan := make(chan int)
 
 	go func() {
+		boldGreen := string(byte(27)) + "[1;32m"
+		boldRed := string(byte(27)) + "[1;31m"
+		boldEnd := string(byte(27)) + "[0m"
+
+		pendingRequests := 0
 		for {
 			select {
 			case sig := <-sigChan:
@@ -51,37 +54,42 @@ func handleSignals() {
 			}
 		}
 	}()
+
+	return requestIncChan, shutdownGracefully
 }
 
 func main() {
-	handleSignals()
+	ch, shutdownGracefully := handleSignals()
 
-	parseSettings()
-	SetupPostgres(config.Connections.PostgreSQLConnection)
-	setupEmailTemplates()
+	config.ParseSettings()
+	db.SetupPostgres(config.Settings.Connections.PostgreSQLConnection)
+	utils.SetupEmailTemplates(*config.Settings)
 
-	context := &PollyContext{}
+	context := &db.PollyContext{
+		Config: *config.Settings,
+	}
 
 	// Setup web-service
 	smolderConfig := smolder.APIConfig{
-		BaseURL:         config.API.BaseURL,
-		PathPrefix:      config.API.PathPrefix,
-		SwaggerAPIPath:  config.API.SwaggerAPIPath,
-		SwaggerPath:     config.API.SwaggerPath,
-		SwaggerFilePath: config.API.SwaggerFilePath,
+		BaseURL:         config.Settings.API.BaseURL,
+		PathPrefix:      config.Settings.API.PathPrefix,
+		SwaggerAPIPath:  config.Settings.API.SwaggerAPIPath,
+		SwaggerPath:     config.Settings.API.SwaggerPath,
+		SwaggerFilePath: config.Settings.API.SwaggerFilePath,
 	}
-	wsContainer := smolder.NewSmolderContainer(smolderConfig, &shutdownGracefully, requestIncChan)
+
+	wsContainer := smolder.NewSmolderContainer(smolderConfig, &shutdownGracefully, ch)
 	func(resources ...smolder.APIResource) {
 		for _, r := range resources {
 			r.Register(wsContainer, smolderConfig, context)
 		}
 	}(
-		&ProposalResource{},
-		&UserResource{},
 		&SessionResource{},
+		&users.UserResource{},
+		&proposals.ProposalResource{},
 	)
 
 	// GlobalLog("Starting polly web-api...")
-	server := &http.Server{Addr: config.API.Bind, Handler: wsContainer}
+	server := &http.Server{Addr: config.Settings.API.Bind, Handler: wsContainer}
 	log.Fatal(server.ListenAndServe())
 }
