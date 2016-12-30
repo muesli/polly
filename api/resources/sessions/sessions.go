@@ -1,11 +1,10 @@
-package main
+package sessions
 
 import (
 	"net/http"
 
 	"github.com/muesli/polly/api/db"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
@@ -14,6 +13,10 @@ import (
 type SessionResource struct {
 	smolder.Resource
 }
+
+var (
+	_ smolder.PostSupported = &SessionResource{}
+)
 
 // SessionResponse is the common response to 'session' requests
 type SessionResponse struct {
@@ -46,46 +49,41 @@ func (r *SessionResource) Register(container *restful.Container, config smolder.
 	r.Config = config
 	r.Context = context
 
-	log.WithField("Resource", r.Name).Info("Registering Resource")
+	r.Init(container, r)
+}
 
-	ws := new(restful.WebService)
-	ws.Path("/" + r.Config.PathPrefix + r.Endpoint).
-		Consumes(restful.MIME_JSON).
-		Produces(restful.MIME_JSON)
-
-	route := ws.POST("/create").To(r.Post)
-
-	route.Param(restful.QueryParameter("username", "username").
-		DataType("string").
-		Required(true).
-		AllowMultiple(false))
-	route.Param(restful.QueryParameter("password", "password").
-		DataType("string").
-		Required(true).
-		AllowMultiple(false))
-	route.Param(restful.QueryParameter("token", "token").
-		DataType("string").
-		Required(true).
-		AllowMultiple(false))
-
-	ws.Route(route)
-
-	container.Add(ws)
+// PostAuthRequired returns false because we don't want requests to be filtered
+// by authentication - we are the ones creating the auth
+func (r *SessionResource) PostAuthRequired() bool {
+	return false
 }
 
 // PostDoc returns the description of this API endpoint
 func (r *SessionResource) PostDoc() string {
-	return "create a new user invitation"
+	return "create a new user session"
 }
 
 // PostParams returns the parameters supported by this API endpoint
 func (r *SessionResource) PostParams() []*restful.Parameter {
-	return nil
+	params := []*restful.Parameter{}
+	params = append(params, restful.FormParameter("username", "username").
+		DataType("string").
+		Required(true).
+		AllowMultiple(false))
+	params = append(params, restful.QueryParameter("password", "password").
+		DataType("string").
+		Required(true).
+		AllowMultiple(false))
+	params = append(params, restful.QueryParameter("token", "token").
+		DataType("string").
+		Required(true).
+		AllowMultiple(false))
+
+	return params
 }
 
 // Post processes an incoming POST (create) request
-func (r *SessionResource) Post(request *restful.Request, response *restful.Response) {
-	context := r.Context.NewAPIContext()
+func (r *SessionResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
 	resp := SessionResponse{}
 	resp.Init(context)
 
