@@ -1,9 +1,11 @@
-package main
+package proposals
 
 import (
 	"net/http"
 
-	_ "github.com/Sirupsen/logrus"
+	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/utils"
+
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
@@ -45,14 +47,14 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 		return
 	}
 
-	proposal := DbProposal{
-		UserID:      auth.(DbUser).ID,
+	proposal := db.DbProposal{
+		UserID:      auth.(db.DbUser).ID,
 		Title:       pps.Proposal.Title,
 		Description: pps.Proposal.Description,
 		Recipient:   pps.Proposal.Recipient,
 		Value:       pps.Proposal.Value,
 	}
-	err = proposal.Save(context.(*PollyContext))
+	err = proposal.Save(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,
@@ -62,7 +64,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 		return
 	}
 
-	sendModerationRequest(&proposal)
+	utils.SendModerationRequest(&proposal)
 
 	resp.AddProposal(&proposal)
 	resp.Send(response)

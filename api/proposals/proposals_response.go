@@ -1,9 +1,11 @@
-package main
+package proposals
 
 import (
 	"time"
 
-	_ "github.com/Sirupsen/logrus"
+	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/utils"
+
 	"github.com/muesli/smolder"
 )
 
@@ -12,7 +14,7 @@ type ProposalResponse struct {
 	smolder.Response
 
 	Proposals []proposalInfoResponse `json:"proposals,omitempty"`
-	proposals []DbProposal
+	proposals []db.DbProposal
 }
 
 type proposalInfoResponse struct {
@@ -38,7 +40,7 @@ func (r *ProposalResponse) Init(context smolder.APIContext) {
 }
 
 // AddProposal adds a proposal to the response
-func (r *ProposalResponse) AddProposal(proposal *DbProposal) {
+func (r *ProposalResponse) AddProposal(proposal *db.DbProposal) {
 	r.proposals = append(r.proposals, *proposal)
 	r.Proposals = append(r.Proposals, prepareProposalResponse(r.Context, proposal))
 }
@@ -55,7 +57,7 @@ func (r *ProposalResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareProposalResponse(context smolder.APIContext, proposal *DbProposal) proposalInfoResponse {
+func prepareProposalResponse(context smolder.APIContext, proposal *db.DbProposal) proposalInfoResponse {
 	resp := proposalInfoResponse{
 		ID:          proposal.ID,
 		Title:       proposal.Title,
@@ -66,7 +68,7 @@ func prepareProposalResponse(context smolder.APIContext, proposal *DbProposal) p
 		Ended:       proposal.Ends.Before(time.Now()),
 		Votes:       proposal.Votes,
 		Moderated:   proposal.Moderated,
-		URL:         buildURL(*proposal),
+		URL:         utils.BuildURL(context.(*db.PollyContext).Config.Web.BaseURL, *proposal),
 	}
 
 	if proposal.Value < 2500 {

@@ -1,10 +1,11 @@
-package main
+package proposals
 
 import (
 	"net/http"
 	"strconv"
 
-	_ "github.com/Sirupsen/logrus"
+	"github.com/muesli/polly/api/db"
+
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
@@ -26,7 +27,7 @@ func (r *ProposalResource) PutParams() []*restful.Parameter {
 
 // Put processes an incoming PUT (update) request
 func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(DbUser).ID != 1 {
+	if auth == nil || auth.(db.DbUser).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,
@@ -59,14 +60,14 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 		return
 	}
 
-	proposal, err := context.(*PollyContext).GetProposalByID(int64(id))
+	proposal, err := context.(*db.PollyContext).GetProposalByID(int64(id))
 	if err != nil {
 		r.NotFound(request, response)
 		return
 	}
 
 	proposal.Moderated = pps.Proposal.Moderated
-	err = proposal.Update(context.(*PollyContext))
+	err = proposal.Update(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,

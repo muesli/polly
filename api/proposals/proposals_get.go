@@ -1,11 +1,12 @@
-package main
+package proposals
 
 import (
 	"net/http"
 	"strconv"
 	"time"
 
-	_ "github.com/Sirupsen/logrus"
+	"github.com/muesli/polly/api/db"
+
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
 )
@@ -36,7 +37,7 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 			"ProposalResource GET"))
 		return
 	}
-	authUser := auth.(DbUser)
+	authUser := auth.(db.DbUser)
 
 	resp := ProposalResponse{}
 	resp.Init(context)
@@ -47,7 +48,7 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 			r.NotFound(request, response)
 			return
 		}
-		proposal, err := context.(*PollyContext).GetProposalByID(int64(iid))
+		proposal, err := context.(*db.PollyContext).GetProposalByID(int64(iid))
 		if err != nil {
 			r.NotFound(request, response)
 			return
@@ -80,12 +81,13 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 			"ProposalResource GET"))
 		return
 	}
-	authUser := auth.(DbUser)
+	authUser := auth.(db.DbUser)
 
 	granttype := params["granttype"]
 	ended := params["ended"]
 
-	proposals, err := context.(*PollyContext).LoadAllProposals()
+	ctx := context.(*db.PollyContext)
+	proposals, err := ctx.LoadAllProposals()
 	if err != nil {
 		r.NotFound(request, response)
 		return
@@ -98,10 +100,10 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		add := true
 		// filter by grant-type
 		if len(granttype) > 0 {
-			if granttype[0] == "small" && proposal.Value >= uint64(config.Proposals.SmallGrantThreshold) {
+			if granttype[0] == "small" && proposal.Value >= uint64(ctx.Config.App.Proposals.SmallGrantThreshold) {
 				add = false
 			}
-			if granttype[0] == "large" && proposal.Value < uint64(config.Proposals.SmallGrantThreshold) {
+			if granttype[0] == "large" && proposal.Value < uint64(ctx.Config.App.Proposals.SmallGrantThreshold) {
 				add = false
 			}
 		}
