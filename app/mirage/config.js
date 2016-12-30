@@ -3,8 +3,7 @@ export default function() {
     this.urlPrefix='http://localhost:9999';
     this.namespace='/v1';
 
-    this.passthrough('/sessions/create');
-    this.passthrough('/sessions/signup');
+    this.passthrough('/sessions');
     this.passthrough('/users');
     this.passthrough('/users/:user_id');
     this.passthrough('/proposals');

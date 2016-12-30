@@ -3,7 +3,7 @@ import Base from 'ember-simple-auth/authenticators/base';
 import config from '../config/environment';
 
 export default Base.extend({
-    tokenEndpoint: config.APP.API + '/v1/sessions/create',
+    tokenEndpoint: config.APP.API + '/v1/sessions',
 
     restore: function(data) {
         return new Ember.RSVP.Promise(function(resolve, reject) {
