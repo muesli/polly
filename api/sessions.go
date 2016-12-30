@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/muesli/polly/api/db"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
@@ -98,20 +100,20 @@ func (r *SessionResource) Post(request *restful.Request, response *restful.Respo
 		return
 	}
 
-	user := DbUser{}
+	user := db.DbUser{}
 	if len(sps.Token) > 0 {
-		auth, aerr := context.(*PollyContext).GetUserByAccessToken(sps.Token)
+		auth, aerr := context.(*db.PollyContext).GetUserByAccessToken(sps.Token)
 		if aerr != nil {
 			r.NotFound(request, response)
 			return
 		}
-		user = auth.(DbUser)
+		user = auth.(db.DbUser)
 
 		if len(sps.Password) > 0 {
-			user.UpdatePassword(context.(*PollyContext), sps.Password)
+			user.UpdatePassword(context.(*db.PollyContext), sps.Password)
 		}
 	} else {
-		user, err = context.(*PollyContext).GetUserByNameAndPassword(sps.Username, sps.Password)
+		user, err = context.(*db.PollyContext).GetUserByNameAndPassword(sps.Username, sps.Password)
 		if err != nil {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 				http.StatusUnauthorized,
@@ -122,7 +124,7 @@ func (r *SessionResource) Post(request *restful.Request, response *restful.Respo
 		}
 	}
 
-	uuid, err := UUID()
+	uuid, err := db.UUID()
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusBadRequest,
@@ -133,7 +135,7 @@ func (r *SessionResource) Post(request *restful.Request, response *restful.Respo
 	}
 
 	user.AuthToken = uuid
-	err = user.Update(context.(*PollyContext))
+	err = user.Update(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,
