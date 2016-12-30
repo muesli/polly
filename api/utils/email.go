@@ -1,42 +1,43 @@
-package main
+package utils
 
 import (
 	"io"
 	"text/template"
 
+	"github.com/muesli/polly/api/config"
+	"github.com/muesli/polly/api/db"
+
 	"github.com/go-gomail/gomail"
 )
 
-// EmailTemplate holds all values of an email template
-type EmailTemplate struct {
-	Subject string
-	Text    string
-	HTML    string
-}
-
 var (
-	templates = make(map[string]EmailTemplate)
+	templates = make(map[string]config.EmailTemplate)
+	Settings  config.ConfigData
 )
 
-func setupEmailTemplates() {
-	templates["invitation"] = EmailTemplate{
-		Subject: config.Templates.Invitation.Subject,
-		Text:    "Hello {{.Email}}!\n\nYou've been invited to Polly!\nJoin here: " + config.Web.BaseURL + "signup/{{.AuthToken}}",
-		HTML:    "Hello <b>{{.Email}}</b>!<br/><br/>You've been invited to Polly!<br/>Join here: " + config.Web.BaseURL + "signup/{{.AuthToken}}",
+// SetupEmailTemplates compiles the email templates
+func SetupEmailTemplates(c config.ConfigData) {
+	Settings = c
+	templates["invitation"] = config.EmailTemplate{
+		Subject: c.App.Templates.Invitation.Subject,
+		Text:    "Hello {{.Email}}!\n\nYou've been invited to Polly!\nJoin here: " + c.Web.BaseURL + "signup/{{.AuthToken}}",
+		HTML:    "Hello <b>{{.Email}}</b>!<br/><br/>You've been invited to Polly!<br/>Join here: " + c.Web.BaseURL + "signup/{{.AuthToken}}",
 	}
-	templates["moderation_proposal"] = EmailTemplate{
-		Subject: config.Templates.ModerationProposal.Subject,
-		Text:    "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: " + config.Web.BaseURL + "proposals/{{.Id}}",
-		HTML:    "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: " + config.Web.BaseURL + "proposals/{{.Id}}",
+	templates["moderation_proposal"] = config.EmailTemplate{
+		Subject: c.App.Templates.ModerationProposal.Subject,
+		Text:    "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: " + c.Web.BaseURL + "proposals/{{.Id}}",
+		HTML:    "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: " + c.Web.BaseURL + "proposals/{{.Id}}",
 	}
 }
 
-func sendInvitation(user *DbUser) {
+// SendInvitation sends out an email, inviting a user to join polly
+func SendInvitation(user *db.DbUser) {
 	tmpl := templates["invitation"]
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", config.Connections.Email.ReplyTo)
-	m.SetHeader("To", "muesli@gmail.com") // user.Email)
+	m.SetHeader("From", Settings.Connections.Email.ReplyTo)
+	m.SetHeader("To", Settings.Connections.Email.
+		AdminEmail) // FIXME: change to user.Email in production
 	m.SetHeader("Subject", tmpl.Subject)
 	//	m.SetAddressHeader("Cc", "foo@foobar.com", "Joe")
 	//	m.Attach("/tmp/attachment.jpg")
@@ -50,18 +51,20 @@ func sendInvitation(user *DbUser) {
 		return t.Execute(w, *user)
 	})
 
-	d := gomail.NewDialer(config.Connections.Email.SMTP.Server, config.Connections.Email.SMTP.Port, config.Connections.Email.SMTP.User, config.Connections.Email.SMTP.Password)
+	d := gomail.NewDialer(Settings.Connections.Email.SMTP.Server, Settings.Connections.Email.SMTP.Port,
+		Settings.Connections.Email.SMTP.User, Settings.Connections.Email.SMTP.Password)
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}
 }
 
-func sendModerationRequest(proposal *DbProposal) {
+// SendModerationRequest sends out an email to the admin, asking for moderation of a newly posted proposal
+func SendModerationRequest(proposal *db.DbProposal) {
 	tmpl := templates["moderation_proposal"]
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", config.Connections.Email.ReplyTo)
-	m.SetHeader("To", config.Connections.Email.AdminEmail)
+	m.SetHeader("From", Settings.Connections.Email.ReplyTo)
+	m.SetHeader("To", Settings.Connections.Email.AdminEmail)
 	m.SetHeader("Subject", tmpl.Subject)
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
@@ -73,7 +76,8 @@ func sendModerationRequest(proposal *DbProposal) {
 		return t.Execute(w, *proposal)
 	})
 
-	d := gomail.NewDialer(config.Connections.Email.SMTP.Server, config.Connections.Email.SMTP.Port, config.Connections.Email.SMTP.User, config.Connections.Email.SMTP.Password)
+	d := gomail.NewDialer(Settings.Connections.Email.SMTP.Server, Settings.Connections.Email.SMTP.Port,
+		Settings.Connections.Email.SMTP.User, Settings.Connections.Email.SMTP.Password)
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}

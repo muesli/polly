@@ -1,28 +1,31 @@
-package main
+package utils
 
 import (
 	"net/url"
 	"strconv"
+
+	"github.com/muesli/polly/api/db"
 )
 
-func buildURL(items ...interface{}) string {
+// BuildURL constructs a url from one or many items
+func BuildURL(base string, items ...interface{}) string {
 	proposal := ""
 	user := ""
 
 	for _, item := range items {
 		switch v := item.(type) {
-		case DbProposal:
+		case db.DbProposal:
 			proposal = url.QueryEscape(strconv.FormatInt(v.ID, 10))
-		case DbUser:
+		case db.DbUser:
 			user = url.QueryEscape(v.Username)
 		}
 	}
 
 	switch items[0].(type) {
-	case DbProposal:
-		return config.Web.BaseURL + "proposal/" + proposal
-	case DbUser:
-		return config.Web.BaseURL + "user/" + user
+	case db.DbProposal:
+		return base + "proposal/" + proposal
+	case db.DbUser:
+		return base + "user/" + user
 	}
 
 	return ""
