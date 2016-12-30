@@ -2,9 +2,7 @@ package db
 
 import (
 	"errors"
-	"strings"
 
-	restful "github.com/emicklei/go-restful"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -87,19 +85,6 @@ func (context *PollyContext) LoadAllUsers() ([]User, error) {
 	}
 
 	return users, err
-}
-
-// Authentication parses the request for an access-/authtoken and returns the matching user
-func (context *PollyContext) Authentication(request *restful.Request) (interface{}, error) {
-	t := request.QueryParameter("accesstoken")
-	if len(t) == 0 {
-		t = request.HeaderParameter("authorization")
-		if strings.Index(t, " ") > 0 {
-			t = strings.TrimSpace(strings.Split(t, " ")[1])
-		}
-	}
-
-	return context.GetUserByAccessToken(t)
 }
 
 // Update a user in the database

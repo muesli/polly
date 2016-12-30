@@ -2,8 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"strings"
 	"time"
 
+	restful "github.com/emicklei/go-restful"
 	"github.com/muesli/polly/api/config"
 
 	log "github.com/Sirupsen/logrus"
@@ -50,12 +52,17 @@ func (context *PollyContext) NewAPIContext() smolder.APIContext {
 	return ctx
 }
 
-func (context *PollyContext) appendQuery(duration time.Duration, query string, txID int) {
-	context.Queries = append(context.Queries, PgQuery{
-		Query:    query,
-		Duration: duration,
-		TxID:     txID,
-	})
+// Authentication parses the request for an access-/authtoken and returns the matching user
+func (context *PollyContext) Authentication(request *restful.Request) (interface{}, error) {
+	t := request.QueryParameter("accesstoken")
+	if len(t) == 0 {
+		t = request.HeaderParameter("authorization")
+		if strings.Index(t, " ") > 0 {
+			t = strings.TrimSpace(strings.Split(t, " ")[1])
+		}
+	}
+
+	return context.GetUserByAccessToken(t)
 }
 
 // LogSummary logs out the current context stats
@@ -71,6 +78,14 @@ func (context *PollyContext) LogSummary() {
 		}
 		log.WithFields(fields).Debug("Processed postgres query")
 	}
+}
+
+func (context *PollyContext) appendQuery(duration time.Duration, query string, txID int) {
+	context.Queries = append(context.Queries, PgQuery{
+		Query:    query,
+		Duration: duration,
+		TxID:     txID,
+	})
 }
 
 // Exec runs a postgres Exec
