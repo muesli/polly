@@ -30,7 +30,7 @@ func (r *UserResource) PostParams() []*restful.Parameter {
 
 // Post processes an incoming POST (create) request
 func (r *UserResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(db.DbUser).ID != 1 {
+	if auth == nil || auth.(db.User).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,
@@ -50,7 +50,7 @@ func (r *UserResource) Post(context smolder.APIContext, request *restful.Request
 		return
 	}
 
-	user := db.DbUser{
+	user := db.User{
 		Username: ups.User.Email,
 		Email:    ups.User.Email,
 	}

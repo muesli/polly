@@ -100,14 +100,14 @@ func (r *SessionResource) Post(request *restful.Request, response *restful.Respo
 		return
 	}
 
-	user := db.DbUser{}
+	user := db.User{}
 	if len(sps.Token) > 0 {
 		auth, aerr := context.(*db.PollyContext).GetUserByAccessToken(sps.Token)
 		if aerr != nil {
 			r.NotFound(request, response)
 			return
 		}
-		user = auth.(db.DbUser)
+		user = auth.(db.User)
 
 		if len(sps.Password) > 0 {
 			user.UpdatePassword(context.(*db.PollyContext), sps.Password)

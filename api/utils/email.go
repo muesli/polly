@@ -31,7 +31,7 @@ func SetupEmailTemplates(c config.ConfigData) {
 }
 
 // SendInvitation sends out an email, inviting a user to join polly
-func SendInvitation(user *db.DbUser) {
+func SendInvitation(user *db.User) {
 	tmpl := templates["invitation"]
 
 	m := gomail.NewMessage()

@@ -69,12 +69,12 @@ func (r *UserResource) Get(context smolder.APIContext, request *restful.Request,
 			r.NotFound(request, response)
 			return
 		}
-		user := auth.(db.DbUser)
+		user := auth.(db.User)
 
 		resp.AddUser(&user)
 	} else {
 		auth, err := context.Authentication(request)
-		if err != nil || auth == nil || auth.(db.DbUser).ID != 1 {
+		if err != nil || auth == nil || auth.(db.User).ID != 1 {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 				http.StatusUnauthorized,
 				false,

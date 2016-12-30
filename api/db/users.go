@@ -8,8 +8,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// DbUser represents the db schema of a user
-type DbUser struct {
+// User represents the db schema of a user
+type User struct {
 	ID        int64
 	Username  string
 	About     string
@@ -19,8 +19,8 @@ type DbUser struct {
 }
 
 // LoadUserByID loads a user by ID from the database
-func (context *PollyContext) LoadUserByID(id int64) (DbUser, error) {
-	user := DbUser{}
+func (context *PollyContext) LoadUserByID(id int64) (User, error) {
+	user := User{}
 	if id < 1 {
 		return user, ErrInvalidID
 	}
@@ -30,29 +30,29 @@ func (context *PollyContext) LoadUserByID(id int64) (DbUser, error) {
 }
 
 // GetUserByID returns a user by ID from the cache
-func (context *PollyContext) GetUserByID(id int64) (DbUser, error) {
-	user := DbUser{}
-	DbUsersCache, err := usersCache.Value(id, context)
+func (context *PollyContext) GetUserByID(id int64) (User, error) {
+	user := User{}
+	usersCache, err := usersCache.Value(id, context)
 	if err != nil {
 		return user, err
 	}
 
-	user = *DbUsersCache.Data().(*DbUser)
+	user = *usersCache.Data().(*User)
 	return user, nil
 }
 
 // GetUserByNameAndPassword loads a user by name & password from the database
-func (context *PollyContext) GetUserByNameAndPassword(name, password string) (DbUser, error) {
-	user := DbUser{}
+func (context *PollyContext) GetUserByNameAndPassword(name, password string) (User, error) {
+	user := User{}
 	hashedPassword := ""
 	err := context.QueryRow("SELECT id, username, about, email, activated, authtoken, password FROM users WHERE username = $1", name).Scan(&user.ID, &user.Username, &user.About, &user.Email, &user.Activated, &user.AuthToken, &hashedPassword)
 	if err != nil {
-		return DbUser{}, errors.New("Invalid username or password")
+		return User{}, errors.New("Invalid username or password")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password+context.Config.App.CryptPepper))
 	if err != nil {
-		return DbUser{}, errors.New("Invalid username or password")
+		return User{}, errors.New("Invalid username or password")
 	}
 
 	return user, err
@@ -60,15 +60,15 @@ func (context *PollyContext) GetUserByNameAndPassword(name, password string) (Db
 
 // GetUserByAccessToken loads a user by accesstoken from the database
 func (context *PollyContext) GetUserByAccessToken(token string) (interface{}, error) {
-	user := DbUser{}
+	user := User{}
 	err := context.QueryRow("SELECT id, username, about, email, activated, authtoken FROM users WHERE authtoken = $1", token).Scan(&user.ID, &user.Username, &user.About, &user.Email, &user.Activated, &user.AuthToken)
 
 	return user, err
 }
 
 // LoadAllUsers loads all users from the database
-func (context *PollyContext) LoadAllUsers() ([]DbUser, error) {
-	users := []DbUser{}
+func (context *PollyContext) LoadAllUsers() ([]User, error) {
+	users := []User{}
 
 	rows, err := context.Query("SELECT id, username, about, email, activated FROM users")
 	if err != nil {
@@ -77,7 +77,7 @@ func (context *PollyContext) LoadAllUsers() ([]DbUser, error) {
 
 	defer rows.Close()
 	for rows.Next() {
-		user := DbUser{}
+		user := User{}
 		err = rows.Scan(&user.ID, &user.Username, &user.About, &user.Email, &user.Activated)
 		if err != nil {
 			return users, err
@@ -103,7 +103,7 @@ func (context *PollyContext) Authentication(request *restful.Request) (interface
 }
 
 // Update a user in the database
-func (user *DbUser) Update(context *PollyContext) error {
+func (user *User) Update(context *PollyContext) error {
 	_, err := context.Exec("UPDATE users SET about = $1, email = $2, authtoken = $3 WHERE id = $4", user.About, user.Email, user.AuthToken, user.ID)
 	if err != nil {
 		panic(err)
@@ -114,7 +114,7 @@ func (user *DbUser) Update(context *PollyContext) error {
 }
 
 // UpdatePassword sets a new user password in the database
-func (user *DbUser) UpdatePassword(context *PollyContext, password string) error {
+func (user *User) UpdatePassword(context *PollyContext, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password+context.Config.App.CryptPepper), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -126,7 +126,7 @@ func (user *DbUser) UpdatePassword(context *PollyContext, password string) error
 }
 
 // Save a user to the database
-func (user *DbUser) Save(context *PollyContext) error {
+func (user *User) Save(context *PollyContext) error {
 	uuid, err := UUID()
 	if err != nil {
 		return err

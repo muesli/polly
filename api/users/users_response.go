@@ -12,7 +12,7 @@ type UserResponse struct {
 	smolder.Response
 
 	Users []userInfoResponse `json:"users,omitempty"`
-	users []db.DbUser
+	users []db.User
 }
 
 type userInfoResponse struct {
@@ -32,7 +32,7 @@ func (r *UserResponse) Init(context smolder.APIContext) {
 }
 
 // AddUser adds a user to the response
-func (r *UserResponse) AddUser(user *db.DbUser) {
+func (r *UserResponse) AddUser(user *db.User) {
 	r.users = append(r.users, *user)
 	r.Users = append(r.Users, prepareUserResponse(r.Context, user))
 }
@@ -49,7 +49,7 @@ func (r *UserResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareUserResponse(context smolder.APIContext, user *db.DbUser) userInfoResponse {
+func prepareUserResponse(context smolder.APIContext, user *db.User) userInfoResponse {
 	resp := userInfoResponse{
 		ID:        user.ID,
 		Email:     user.Email,

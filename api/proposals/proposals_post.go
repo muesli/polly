@@ -48,7 +48,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 	}
 
 	proposal := db.Proposal{
-		UserID:      auth.(db.DbUser).ID,
+		UserID:      auth.(db.User).ID,
 		Title:       pps.Proposal.Title,
 		Description: pps.Proposal.Description,
 		Recipient:   pps.Proposal.Recipient,

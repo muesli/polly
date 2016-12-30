@@ -27,7 +27,7 @@ func (r *ProposalResource) PutParams() []*restful.Parameter {
 
 // Put processes an incoming PUT (update) request
 func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(db.DbUser).ID != 1 {
+	if auth == nil || auth.(db.User).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,

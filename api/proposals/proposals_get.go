@@ -37,7 +37,7 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 			"ProposalResource GET"))
 		return
 	}
-	authUser := auth.(db.DbUser)
+	authUser := auth.(db.User)
 
 	resp := ProposalResponse{}
 	resp.Init(context)
@@ -81,7 +81,7 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 			"ProposalResource GET"))
 		return
 	}
-	authUser := auth.(db.DbUser)
+	authUser := auth.(db.User)
 
 	granttype := params["granttype"]
 	ended := params["ended"]
