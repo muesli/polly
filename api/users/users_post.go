@@ -1,7 +1,10 @@
-package main
+package users
 
 import (
 	"net/http"
+
+	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/utils"
 
 	_ "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
@@ -27,7 +30,7 @@ func (r *UserResource) PostParams() []*restful.Parameter {
 
 // Post processes an incoming POST (create) request
 func (r *UserResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response, auth interface{}) {
-	if auth == nil || auth.(DbUser).ID != 1 {
+	if auth == nil || auth.(db.DbUser).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusUnauthorized,
 			false,
@@ -47,11 +50,11 @@ func (r *UserResource) Post(context smolder.APIContext, request *restful.Request
 		return
 	}
 
-	user := DbUser{
+	user := db.DbUser{
 		Username: ups.User.Email,
 		Email:    ups.User.Email,
 	}
-	err = user.Save(context.(*PollyContext))
+	err = user.Save(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,
@@ -61,7 +64,7 @@ func (r *UserResource) Post(context smolder.APIContext, request *restful.Request
 		return
 	}
 
-	sendInvitation(&user)
+	utils.SendInvitation(&user)
 
 	resp := UserResponse{}
 	resp.Init(context)

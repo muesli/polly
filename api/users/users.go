@@ -1,4 +1,4 @@
-package main
+package users
 
 import (
 	_ "github.com/Sirupsen/logrus"

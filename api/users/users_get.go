@@ -1,8 +1,10 @@
-package main
+package users
 
 import (
 	"net/http"
 	"strconv"
+
+	"github.com/muesli/polly/api/db"
 
 	_ "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful"
@@ -43,7 +45,7 @@ func (r *UserResource) GetByIDs(context smolder.APIContext, request *restful.Req
 			r.NotFound(request, response)
 			return
 		}
-		user, err := context.(*PollyContext).GetUserByID(int64(iid))
+		user, err := context.(*db.PollyContext).GetUserByID(int64(iid))
 		if err != nil {
 			r.NotFound(request, response)
 			return
@@ -62,17 +64,17 @@ func (r *UserResource) Get(context smolder.APIContext, request *restful.Request,
 
 	token := params["token"]
 	if len(token) > 0 {
-		auth, err := context.(*PollyContext).GetUserByAccessToken(token[0])
+		auth, err := context.(*db.PollyContext).GetUserByAccessToken(token[0])
 		if auth == nil || err != nil {
 			r.NotFound(request, response)
 			return
 		}
-		user := auth.(DbUser)
+		user := auth.(db.DbUser)
 
 		resp.AddUser(&user)
 	} else {
 		auth, err := context.Authentication(request)
-		if err != nil || auth == nil || auth.(DbUser).ID != 1 {
+		if err != nil || auth == nil || auth.(db.DbUser).ID != 1 {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 				http.StatusUnauthorized,
 				false,
@@ -81,7 +83,7 @@ func (r *UserResource) Get(context smolder.APIContext, request *restful.Request,
 			return
 		}
 
-		users, err := context.(*PollyContext).LoadAllUsers()
+		users, err := context.(*db.PollyContext).LoadAllUsers()
 		if err != nil {
 			r.NotFound(request, response)
 			return
