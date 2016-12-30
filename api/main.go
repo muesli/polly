@@ -13,6 +13,7 @@ import (
 	"github.com/muesli/polly/api/utils"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/emicklei/go-restful/swagger"
 	"github.com/muesli/smolder"
 )
 
@@ -71,11 +72,8 @@ func main() {
 
 	// Setup web-service
 	smolderConfig := smolder.APIConfig{
-		BaseURL:         config.Settings.API.BaseURL,
-		PathPrefix:      config.Settings.API.PathPrefix,
-		SwaggerAPIPath:  config.Settings.API.SwaggerAPIPath,
-		SwaggerPath:     config.Settings.API.SwaggerPath,
-		SwaggerFilePath: config.Settings.API.SwaggerFilePath,
+		BaseURL:    config.Settings.API.BaseURL,
+		PathPrefix: config.Settings.API.PathPrefix,
 	}
 
 	wsContainer := smolder.NewSmolderContainer(smolderConfig, &shutdownGracefully, ch)
@@ -88,6 +86,17 @@ func main() {
 		&users.UserResource{},
 		&proposals.ProposalResource{},
 	)
+
+	if config.Settings.API.SwaggerFilePath != "" {
+		wsConfig := swagger.Config{
+			WebServices:     wsContainer.RegisteredWebServices(),
+			WebServicesUrl:  config.Settings.API.BaseURL,
+			ApiPath:         config.Settings.API.SwaggerAPIPath,
+			SwaggerPath:     config.Settings.API.SwaggerPath,
+			SwaggerFilePath: config.Settings.API.SwaggerFilePath,
+		}
+		swagger.RegisterSwaggerService(wsConfig, wsContainer)
+	}
 
 	// GlobalLog("Starting polly web-api...")
 	server := &http.Server{Addr: config.Settings.API.Bind, Handler: wsContainer}
