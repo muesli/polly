@@ -168,8 +168,8 @@ func initCaches() {
 					return nil
 				}
 
-				entry := cache2go.CreateCacheItem(key, 10*time.Minute, &user)
-				return &entry
+				entry := cache2go.NewCacheItem(key, 10*time.Minute, &user)
+				return entry
 			}
 		}
 		fmt.Println("Got no APIContext passed in")
@@ -191,8 +191,8 @@ func initCaches() {
 					return nil
 				}
 
-				entry := cache2go.CreateCacheItem(key, 10*time.Minute, &proposal)
-				return &entry
+				entry := cache2go.NewCacheItem(key, 10*time.Minute, &proposal)
+				return entry
 			}
 		}
 		fmt.Println("Got no APIContext passed in")
