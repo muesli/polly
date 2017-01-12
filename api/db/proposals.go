@@ -76,7 +76,12 @@ func (proposal *Proposal) Update(context *PollyContext) error {
 
 // Save a proposal to the database
 func (proposal *Proposal) Save(context *PollyContext) error {
-	proposal.Ends = time.Now().AddDate(0, 0, 14)
+	if proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
+		minEndDate := time.Now().AddDate(0, 0, int(context.Config.App.Proposals.SmallGrantVoteMinDays))
+		if proposal.Ends.Before(minEndDate) {
+			proposal.Ends = minEndDate
+		}
+	}
 
 	err := context.QueryRow("INSERT INTO proposals (userid, title, description, recipient, value, ends) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Recipient, proposal.Value, proposal.Ends).Scan(&proposal.ID)
 	proposalsCache.Delete(proposal.ID)
