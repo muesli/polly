@@ -11,7 +11,8 @@ type VoteResource struct {
 }
 
 var (
-	_ smolder.GetSupported = &VoteResource{}
+	_ smolder.GetSupported  = &VoteResource{}
+	_ smolder.PostSupported = &VoteResource{}
 )
 
 // Register this resource with the container to setup all the routes
