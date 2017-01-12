@@ -8,6 +8,7 @@ export default function() {
     this.passthrough('/users/:user_id');
     this.passthrough('/proposals');
     this.passthrough('/proposals/:proposal_id');
+    this.passthrough('/votes');
 
 /*    this.get('/proposals', function() {
       return {
