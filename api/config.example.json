@@ -1,0 +1,70 @@
+{
+    "API": {
+        "BaseURL":              "http://localhost:9999",
+        "PathPrefix":           "v1/",
+        "Bind":                 ":9999",
+
+        "SwaggerAPIPath":       "/apidocs.json",
+        "SwaggerPath":          "/apidocs/",
+        "SwaggerFilePath":      "/home/polly/swagger-ui/dist"
+    },
+
+    "Connections": {
+        "Email": {
+            "AdminEmail":       "admin@domain.tld",
+            "ReplyTo":          "no-reply@domain.tld",
+            "SMTP": {
+                "User":         "user@domain.tld",
+                "Password":     "password",
+                "Server":       "smtp.domain.tld",
+                "Port":         587
+            },
+            "IMAP": {
+                "User":         "user@domain.tld",
+                "Password":     "password",
+                "Server":       "imap.domain.tld",
+                "Port":         993,
+                "LastMessage":  "",
+                "LastSeen":     0
+            }
+        },
+        "PostgreSQLConnection": {
+            "Host":             "localhost",
+            "DbName":           "polly",
+            "User":             "user",
+            "Password":         "password"
+        },
+        "Logging": {
+            "IrcHost":              "irccat:12347",
+            "IrcChannel":           "#polly.log",
+            "IrcImpChannel":        "#polly.error"
+        }
+    },
+
+    "Web": {
+        "BaseURL":              "http://localhost:4200/"
+    },
+
+    "App": {
+        "CryptPepper":          "pepper",
+
+        "Proposals": {
+            "SmallGrantValueThreshold": 2000,
+            "SmallGrantVoteThreshold":  5,
+            "SmallGrantVoteMinDays":  7
+        },
+
+        "Templates": {
+            "Invitation": {
+                "Subject": "Invitation to Polly",
+                "Text": "Hello {{.Email}}!\n\nYou've been invited to Polly!\nJoin here: {{.BaseURL}}signup/{{.AuthToken}}",
+                "HTML": "Hello <b>{{.Email}}</b>!<br/><br/>You've been invited to Polly!<br/>Join here: {{.BaseURL}}signup/{{.AuthToken}}"
+            },
+            "ModerationProposal": {
+                "Subject": "New proposal posted & awaiting moderation",
+                "Text": "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: {{.BaseUrl}}proposals/{{.ID}}",
+                "HTML": "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: {{.BaseUrl}}proposals/{{.ID}}"
+            }
+        }
+    }
+}
