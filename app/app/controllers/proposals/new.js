@@ -7,6 +7,12 @@ export default Ember.Controller.extend({
   value: "",
   responseMessage: "",
   errorMessage: "",
+  enddate: new Date(),
+
+  minimumProposalEndDate: Ember.computed(function() {
+      var date = moment().add(7, 'd').toDate();
+      return moment(date).format('YYYY/MM/DD');
+  }),
 
   isValid: Ember.computed('recipient', 'title', 'description', 'value', function() {
       return this.title.length > 0 && this.description.length > 0 && this.recipient.length > 0 && parseInt(this.value) > 0;
@@ -23,7 +29,8 @@ export default Ember.Controller.extend({
       const description = this.get('description');
       const email = this.get('recipient');
       const value = this.get('value');
-      const newProposal = this.store.createRecord('proposal', { title: title, description: description, recipient: email, value: value });
+      const enddate = this.get('enddate');
+      const newProposal = this.store.createRecord('proposal', { title: title, description: description, recipient: email, value: value, ends: enddate });
       newProposal.save().then(
         (/*proposal*/) => {
           this.set('responseMessage', `Your proposal is now awaiting moderation. Thank you!`);
@@ -32,6 +39,7 @@ export default Ember.Controller.extend({
           this.set('description', '');
           this.set('recipient', '');
           this.set('value', '');
+          this.set('enddate', '');
         },
         error => {
           this.set('errorMessage', `Failed adding your proposal: ` + error);
