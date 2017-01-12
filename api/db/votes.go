@@ -30,3 +30,9 @@ func (context *PollyContext) LoadAllUserVotes() ([]Vote, error) {
 
 	return votes, err
 }
+
+// Save a proposal to the database
+func (vote *Vote) Save(context *PollyContext) error {
+	err := context.QueryRow("INSERT INTO votes (userid, proposalid, vote) VALUES ($1, $2, $3) RETURNING id", vote.UserID, vote.ProposalID, vote.Vote).Scan(&vote.ID)
+	return err
+}
