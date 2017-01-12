@@ -3,7 +3,6 @@ package proposals
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/muesli/polly/api/db"
 
@@ -98,19 +97,21 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		add := true
 		// filter by grant-type
 		if len(granttype) > 0 {
-			if granttype[0] == "small" && proposal.Value >= uint64(ctx.Config.App.Proposals.SmallGrantThreshold) {
+			if granttype[0] == "small" && proposal.Value >= uint64(ctx.Config.App.Proposals.SmallGrantValueThreshold) {
 				add = false
 			}
-			if granttype[0] == "large" && proposal.Value < uint64(ctx.Config.App.Proposals.SmallGrantThreshold) {
+			if granttype[0] == "large" && proposal.Value < uint64(ctx.Config.App.Proposals.SmallGrantValueThreshold) {
 				add = false
 			}
 		}
 		if len(ended) > 0 {
-			if ended[0] == "true" && proposal.Ends.After(time.Now()) {
+			if ended[0] == "true" && !proposal.Ended(ctx) {
+				// we only want proposals that ended already
 				add = false
 			}
 		}
-		if (len(ended) == 0 || ended[0] == "false") && proposal.Ends.Before(time.Now()) {
+		if (len(ended) == 0 || ended[0] == "false") && proposal.Ended(ctx) {
+			// we only want proposals that did not end yet
 			add = false
 		}
 
