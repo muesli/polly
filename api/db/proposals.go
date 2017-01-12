@@ -82,3 +82,10 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 	proposalsCache.Delete(proposal.ID)
 	return err
 }
+
+// Ended returns true if a proposal either ended or got rejected by votes
+func (proposal *Proposal) Ended(context *PollyContext) bool {
+	return proposal.Ends.Before(time.Now()) ||
+		(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
+			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold))
+}
