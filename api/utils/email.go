@@ -25,8 +25,8 @@ func SetupEmailTemplates(c config.Data) {
 	}
 	templates["moderation_proposal"] = config.EmailTemplate{
 		Subject: c.App.Templates.ModerationProposal.Subject,
-		Text:    "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: " + c.Web.BaseURL + "proposals/{{.Id}}",
-		HTML:    "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: " + c.Web.BaseURL + "proposals/{{.Id}}",
+		Text:    "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: " + c.Web.BaseURL + "proposals/{{.ID}}",
+		HTML:    "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: " + c.Web.BaseURL + "proposals/{{.ID}}",
 	}
 }
 
