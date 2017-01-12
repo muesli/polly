@@ -105,7 +105,7 @@ func (proposal *Proposal) Vote(context *PollyContext, user User) (Vote, error) {
 		return Vote{}, err
 	}
 
-	err = context.QueryRow("UPDATE proposals SET votes=votes+1 RETURNING votes").Scan(&proposal.Votes)
+	err = context.QueryRow("UPDATE proposals SET votes=votes+1 WHERE id = $1 RETURNING votes", proposal.ID).Scan(&proposal.Votes)
 	proposalsCache.Delete(proposal.ID)
 	return vote, err
 }
