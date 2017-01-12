@@ -35,9 +35,9 @@
       {{/if}}
     {{else}}
         {{#if (eq currentUserVoted true)}}
-            You've already voted on this proposal!
+            You've voted against this proposal!
         {{else}}
-            <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote for this proposal</button>
+            <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
         {{/if}}
     {{/if}}
   </div>
