@@ -25,8 +25,17 @@ export default Ember.Controller.extend({
             proposal.save();
         });
     },
-    vote(id) {
-        alert(id);
+    vote() {
+        const proposalID = this.get('proposal').get('id');
+        const newVote = this.store.createRecord('vote', { proposal: this.get('proposal'), voted: true });
+        newVote.save().then(
+          (/*vote*/) => {
+              this.store.findRecord('proposal', proposalID, {reload: true});
+          },
+          error => {
+            alert(error);
+          }
+        );
     }
   }
 });
