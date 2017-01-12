@@ -58,6 +58,7 @@ func (r *ProposalResponse) EmptyResponse() interface{} {
 }
 
 func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) proposalInfoResponse {
+	ctx := context.(*db.PollyContext)
 	resp := proposalInfoResponse{
 		ID:          proposal.ID,
 		Title:       proposal.Title,
@@ -65,10 +66,10 @@ func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) 
 		Recipient:   proposal.Recipient,
 		Value:       proposal.Value,
 		Ends:        proposal.Ends,
-		Ended:       proposal.Ends.Before(time.Now()),
+		Ended:       proposal.Ended(ctx),
 		Votes:       proposal.Votes,
 		Moderated:   proposal.Moderated,
-		URL:         utils.BuildURL(context.(*db.PollyContext).Config.Web.BaseURL, *proposal),
+		URL:         utils.BuildURL(ctx.Config.Web.BaseURL, *proposal),
 	}
 
 	if proposal.Value < 2500 {
