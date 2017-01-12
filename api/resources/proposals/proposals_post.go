@@ -2,6 +2,7 @@ package proposals
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/muesli/polly/api/db"
 	"github.com/muesli/polly/api/utils"
@@ -13,11 +14,12 @@ import (
 // ProposalPostStruct holds all values of an incoming POST request
 type ProposalPostStruct struct {
 	Proposal struct {
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Recipient   string `json:"recipient"`
-		Value       uint64 `json:"value"`
-		Moderated   bool   `json:"moderated"`
+		Title       string    `json:"title"`
+		Description string    `json:"description"`
+		Recipient   string    `json:"recipient"`
+		Value       uint64    `json:"value"`
+		Moderated   bool      `json:"moderated"`
+		Ends        time.Time `json:"ends"`
 	} `json:"proposal"`
 }
 
@@ -63,6 +65,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 		Description: pps.Proposal.Description,
 		Recipient:   pps.Proposal.Recipient,
 		Value:       pps.Proposal.Value,
+		Ends:        pps.Proposal.Ends,
 	}
 	err = proposal.Save(context.(*db.PollyContext))
 	if err != nil {
