@@ -39,6 +39,8 @@ type Data struct {
 		CryptPepper string
 
 		Proposals struct {
+			TotalGrantValue          uint
+			MaxGrantValue            uint
 			SmallGrantValueThreshold uint
 			SmallGrantVoteThreshold  uint
 			SmallGrantVoteMinDays    uint
