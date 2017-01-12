@@ -13,6 +13,7 @@ import (
 	"github.com/muesli/polly/api/resources/proposals"
 	"github.com/muesli/polly/api/resources/sessions"
 	"github.com/muesli/polly/api/resources/users"
+	"github.com/muesli/polly/api/resources/votes"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/emicklei/go-restful/swagger"
@@ -87,6 +88,7 @@ func main() {
 		&sessions.SessionResource{},
 		&users.UserResource{},
 		&proposals.ProposalResource{},
+		&votes.VoteResource{},
 	)
 
 	if config.Settings.API.SwaggerFilePath != "" {
