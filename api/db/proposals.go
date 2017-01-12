@@ -1,8 +1,6 @@
 package db
 
-import (
-	"time"
-)
+import "time"
 
 // Proposal represents the db schema of a proposal
 type Proposal struct {
@@ -93,4 +91,21 @@ func (proposal *Proposal) Ended(context *PollyContext) bool {
 	return proposal.Ends.Before(time.Now()) ||
 		(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
 			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold))
+}
+
+// Vote marks a vote for a proposal
+func (proposal *Proposal) Vote(context *PollyContext, user User) (Vote, error) {
+	vote := Vote{
+		UserID:     user.ID,
+		ProposalID: proposal.ID,
+		Vote:       true,
+	}
+	err := vote.Save(context)
+	if err != nil {
+		return Vote{}, err
+	}
+
+	err = context.QueryRow("UPDATE proposals SET votes=votes+1 RETURNING votes").Scan(&proposal.Votes)
+	proposalsCache.Delete(proposal.ID)
+	return vote, err
 }
