@@ -74,6 +74,10 @@ func (proposal *Proposal) Update(context *PollyContext) error {
 
 // Save a proposal to the database
 func (proposal *Proposal) Save(context *PollyContext) error {
+	if proposal.Value > uint64(context.Config.App.Proposals.MaxGrantValue) {
+		proposal.Value = uint64(context.Config.App.Proposals.MaxGrantValue)
+	}
+
 	if proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
 		minEndDate := time.Now().AddDate(0, 0, int(context.Config.App.Proposals.SmallGrantVoteMinDays))
 		if proposal.Ends.Before(minEndDate) {
