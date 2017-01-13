@@ -109,7 +109,7 @@
     <tbody>
     {{#each finishedProposals as |proposal|}}
       <tr>
-        <td>{{#link-to "proposals.show" proposal}}{{proposal.title}}{{/link-to}}</td>
+        <td>{{#link-to "proposals.show" proposal.id}}{{proposal.title}}{{/link-to}}</td>
         <td>{{proposal.value}} &euro;</td>
         <td>{{proposal.recipient}}</td>
         <td>{{moment-from-now proposal.ends}}</td>

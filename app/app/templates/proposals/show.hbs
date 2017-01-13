@@ -34,10 +34,12 @@
         <button {{action 'moderate' proposal.id}} class="btn btn-primary btn-lg btn-block">Allow proposal</button>
       {{/if}}
     {{else}}
-        {{#if (eq currentUserVoted true)}}
-            You've voted against this proposal!
-        {{else}}
-            <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
+        {{#if (eq proposal.ended false)}}
+            {{#if (eq currentUserVoted true)}}
+                You've voted against this proposal!
+            {{else}}
+                <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
+            {{/if}}
         {{/if}}
     {{/if}}
   </div>
