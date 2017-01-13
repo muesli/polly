@@ -15,8 +15,10 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'title', 'description', 'value', function() {
-      return this.title.length > 0 && this.description.length > 0 && this.recipient.length > 0 && parseInt(this.value) > 0;
+  isValid: Ember.computed('recipient', 'title', 'description', 'value', 'enddate', function() {
+      return this.title.length > 0 && this.description.length > 0 &&
+             this.recipient.length > 0 && parseInt(this.value) > 0 &&
+             this.enddate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
