@@ -49,11 +49,13 @@
         "CryptPepper":          "pepper",
 
         "Proposals": {
-            "TotalGrantValue":          50000,
-            "MaxGrantValue":            5000,
-            "SmallGrantValueThreshold": 2000,
-            "SmallGrantVoteThreshold":  5,
-            "SmallGrantVoteMinDays":  7
+            "TotalRuntimeMonths":           6,
+            "TotalGrantValue":              50000,
+            "GrantIntervalMonths":          1,
+            "MaxGrantValue":                5000,
+            "SmallGrantValueThreshold":     2000,
+            "SmallGrantVoteThreshold":      5,
+            "SmallGrantVoteRuntimeDays":    14
         },
 
         "Templates": {
