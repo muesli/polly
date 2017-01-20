@@ -4,6 +4,7 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   description: DS.attr('string'),
   url: DS.attr('string'),
+  user: DS.belongsTo('user'),
   recipient: DS.attr('string'),
   value: DS.attr('number'),
   granttype: DS.attr('string'),
