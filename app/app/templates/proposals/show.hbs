@@ -43,6 +43,8 @@
             {{else}}
                 <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
             {{/if}}
+        {{else}}
+            This proposal has {{#if (eq proposal.accepted false)}}<b>not</b> {{/if}} been accepted!
         {{/if}}
     {{/if}}
   </div>

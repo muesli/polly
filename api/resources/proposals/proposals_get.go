@@ -29,6 +29,7 @@ func (r *ProposalResource) GetDoc() string {
 func (r *ProposalResource) GetParams() []*restful.Parameter {
 	params := []*restful.Parameter{}
 	// params = append(params, restful.QueryParameter("user_id", "id of a user").DataType("int64"))
+	params = append(params, restful.QueryParameter("accepted", "only return accepted/rejected proposals").DataType("bool"))
 	params = append(params, restful.QueryParameter("granttype", "small or large").DataType("string"))
 	params = append(params, restful.QueryParameter("ended", "only returns finished proposals").DataType("bool"))
 
@@ -45,20 +46,21 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 	resp := ProposalResponse{}
 	resp.Init(context)
 
+	ctx := context.(*db.PollyContext)
 	for _, id := range ids {
 		iid, err := strconv.Atoi(id)
 		if err != nil {
 			r.NotFound(request, response)
 			return
 		}
-		proposal, err := context.(*db.PollyContext).GetProposalByID(int64(iid))
+		proposal, err := ctx.GetProposalByID(int64(iid))
 		if err != nil {
 			r.NotFound(request, response)
 			return
 		}
 
 		// only admin gets to see all proposals before moderation
-		if authUser.ID == 1 || proposal.Moderated {
+		if authUser.ID == 1 || proposal.Moderated || proposal.Started(ctx) {
 			resp.AddProposal(&proposal)
 		} else {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
@@ -80,6 +82,7 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		authUser = auth.(db.User)
 	}
 
+	accepted := params["accepted"]
 	granttype := params["granttype"]
 	ended := params["ended"]
 
@@ -114,9 +117,17 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 			// we only want proposals that did not end yet
 			add = false
 		}
+		if len(accepted) > 0 {
+			if accepted[0] == "false" && proposal.Accepted(ctx) {
+				add = false
+			}
+			if accepted[0] == "true" && !proposal.Accepted(ctx) {
+				add = false
+			}
+		}
 
 		// only admin gets to see all proposals before moderation
-		if authUser.ID != 1 && !proposal.Moderated {
+		if authUser.ID != 1 && (!proposal.Moderated || !proposal.Started(ctx)) {
 			add = false
 		}
 

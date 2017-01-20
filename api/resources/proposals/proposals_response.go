@@ -71,6 +71,7 @@ func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) 
 		Ends:        proposal.Ends(ctx),
 		Ended:       proposal.Ended(ctx),
 		Votes:       proposal.Votes,
+		Accepted:    proposal.Accepted(ctx),
 		Moderated:   proposal.Moderated,
 		URL:         utils.BuildURL(ctx.Config.Web.BaseURL, *proposal),
 	}
