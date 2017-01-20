@@ -82,6 +82,7 @@ func GetDatabase() *sql.DB {
 		// See: http://www.postgresql.org/docs/devel/static/sql-createindex.html
 		indexes := []string{
 			`CREATE INDEX idx_users_email ON users(email)`,
+			`CREATE INDEX idx_users_authtoken ON users(authtoken)`,
 			`CREATE INDEX idx_proposals_moderated ON proposals(moderated)`,
 			`CREATE INDEX idx_proposals_value ON proposals(value)`,
 			`CREATE INDEX idx_proposals_userid ON proposals(userid)`,
