@@ -32,21 +32,11 @@ func (r *ProposalResource) PutParams() []*restful.Parameter {
 
 // Put processes an incoming PUT (update) request
 func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response) {
-	auth, err := context.Authentication(request)
-	if err != nil || auth.(db.User).ID != 1 {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusUnauthorized,
-			false,
-			"Admin permission required for this operation",
-			"ProposalResource PUT"))
-		return
-	}
-
 	resp := ProposalResponse{}
 	resp.Init(context)
 
 	pps := ProposalPutStruct{}
-	err = request.ReadEntity(&pps)
+	err := request.ReadEntity(&pps)
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusBadRequest,
@@ -72,7 +62,25 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 		return
 	}
 
-	proposal.Moderated = pps.Proposal.Moderated
+	auth, err := context.Authentication(request)
+	if err != nil || (auth.(db.User).ID != 1 && auth.(db.User).ID != proposal.UserID) {
+		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
+			http.StatusUnauthorized,
+			false,
+			"Admin permission required for this operation",
+			"ProposalResource PUT"))
+		return
+	}
+
+	if auth.(db.User).ID == 1 {
+		proposal.Moderated = pps.Proposal.Moderated
+	}
+	proposal.Title = pps.Proposal.Title
+	proposal.Description = pps.Proposal.Description
+	proposal.Recipient = pps.Proposal.Recipient
+	proposal.Value = pps.Proposal.Value
+	proposal.Starts = pps.Proposal.Starts
+
 	err = proposal.Update(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
