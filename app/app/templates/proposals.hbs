@@ -1,1 +1,21 @@
+<div class="text-center">
+    <div class="btn-group" data-toggle="buttons">
+      {{#link-to "proposals.all" tagName="label" id="grantsRunning" class="btn btn-lg btn-primary" href=false}}
+        <input type="radio" name="options" autocomplete="off"> Running
+      {{/link-to}}
+      {{#link-to "proposals.accepted" tagName="label" id="grantsAccepted" class="btn btn-lg btn-primary" href=false}}
+        <input type="radio" name="options" autocomplete="off"> Accepted
+      {{/link-to}}
+      {{#link-to "proposals.rejected" tagName="label" id="grantsRejected" class="btn btn-lg btn-primary" href=false}}
+        <input type="radio" name="options" autocomplete="off"> Rejected
+      {{/link-to}}
+      {{#link-to "proposals.finished" tagName="label" id="grantsFinished" class="btn btn-lg btn-primary" href=false}}
+        <input type="radio" name="options" autocomplete="off"> Finished
+      {{/link-to}}
+    </div>
+</div>
+
+<br/>
+<br/>
+
 {{outlet}}

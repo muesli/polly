@@ -1,0 +1,38 @@
+<div>
+  <h4>Look, some proposals were accepted!</h4>
+  <table class="table table-striped">
+<!--      <caption>Accepted Grant Proposals</caption>-->
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Recipient</th>
+	    <th>Starts</th>
+        {{#if (eq currentUser.user.id "1")}}
+            <th>Moderated</th>
+        {{/if}}
+	    <th class="text-right">Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each acceptedProposals as |proposal|}}
+      <tr>
+        <td>{{#link-to "proposals.show" proposal.id}}{{proposal.title}}{{/link-to}}</td>
+        <td>{{proposal.value}} &euro;</td>
+        <td>{{proposal.recipient}}</td>
+        <td>{{moment-from-now proposal.starts}}</td>
+        {{#if (eq currentUser.user.id "1")}}
+            {{#if (eq proposal.moderated true)}}
+                <td>Yes</td>
+            {{else}}
+                <td><b>No</b></td>
+            {{/if}}
+        {{/if}}
+        <td class="text-right">{{proposal.votes}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  {{acceptedProposals.length}} accepted proposals
+</div>

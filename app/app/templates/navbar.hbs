@@ -12,7 +12,7 @@
 
     <div class="collapse navbar-collapse" id="main-navbar">
       <ul class="nav navbar-nav">
-            {{#link-to 'proposals.all' tagName="li"}}<a href="">Proposals</a>{{/link-to}}
+            {{#link-to 'proposals' tagName="li"}}<a href="">Proposals</a>{{/link-to}}
             {{#if (not-eq currentUser.user.id "1")}}
               {{#link-to 'proposals.new' tagName="li"}}<a href="">Add your Proposal</a>{{/link-to}}
             {{/if}}
