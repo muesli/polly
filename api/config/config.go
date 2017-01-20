@@ -39,10 +39,12 @@ type Data struct {
 		CryptPepper string
 
 		Proposals struct {
+			StartMonth                uint
 			TotalRuntimeMonths        uint
 			TotalGrantValue           uint
 			GrantIntervalMonths       uint
 			MaxGrantValue             uint
+			MaxLargeGrantsPerMonth    uint
 			SmallGrantValueThreshold  uint
 			SmallGrantVoteThreshold   uint
 			SmallGrantVoteRuntimeDays uint
