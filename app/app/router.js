@@ -17,6 +17,7 @@ Router.map(function() {
     this.route('accepted');
     this.route('rejected');
     this.route('edit', { path: '/edit/:proposal_id' });
+    this.route('own');
   });
   this.route('login');
   this.route('signup', { path: '/signup/:token' });
