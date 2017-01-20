@@ -19,7 +19,7 @@ type ProposalPostStruct struct {
 		Recipient   string    `json:"recipient"`
 		Value       uint64    `json:"value"`
 		Moderated   bool      `json:"moderated"`
-		Ends        time.Time `json:"ends"`
+		Starts      time.Time `json:"starts"`
 	} `json:"proposal"`
 }
 

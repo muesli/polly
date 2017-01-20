@@ -7,8 +7,10 @@ export default DS.Model.extend({
   recipient: DS.attr('string'),
   value: DS.attr('number'),
   granttype: DS.attr('string'),
+  starts: DS.attr('isodate'),
   ends: DS.attr('isodate'),
   ended: DS.attr('boolean'),
+  accepted: DS.attr('boolean'),
   moderated: DS.attr('boolean'),
   votes: DS.attr('number')
 });

@@ -1,6 +1,9 @@
 package db
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 // Proposal represents the db schema of a proposal
 type Proposal struct {
@@ -10,7 +13,7 @@ type Proposal struct {
 	Description string
 	Recipient   string
 	Value       uint64
-	Ends        time.Time
+	Starts      time.Time
 	Votes       uint64
 	Moderated   bool
 }
@@ -22,7 +25,7 @@ func (context *PollyContext) LoadProposalByID(id int64) (Proposal, error) {
 		return proposal, ErrInvalidID
 	}
 
-	err := context.QueryRow("SELECT id, userid, title, description, recipient, value, ends, votes, moderated FROM proposals WHERE id = $1", id).Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Recipient, &proposal.Value, &proposal.Ends, &proposal.Votes, &proposal.Moderated)
+	err := context.QueryRow("SELECT id, userid, title, description, recipient, value, starts, votes, moderated FROM proposals WHERE id = $1", id).Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Recipient, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated)
 	return proposal, err
 }
 
@@ -42,7 +45,7 @@ func (context *PollyContext) GetProposalByID(id int64) (Proposal, error) {
 func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	proposals := []Proposal{}
 
-	rows, err := context.Query("SELECT id, userid, title, description, recipient, value, ends, votes, moderated FROM proposals ORDER BY ends ASC")
+	rows, err := context.Query("SELECT id, userid, title, description, recipient, value, starts, votes, moderated FROM proposals ORDER BY starts ASC")
 	if err != nil {
 		return proposals, err
 	}
@@ -50,7 +53,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	defer rows.Close()
 	for rows.Next() {
 		proposal := Proposal{}
-		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Recipient, &proposal.Value, &proposal.Ends, &proposal.Votes, &proposal.Moderated)
+		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Recipient, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated)
 		if err != nil {
 			return proposals, err
 		}
@@ -85,7 +88,11 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 		}
 	}
 
-	err := context.QueryRow("INSERT INTO proposals (userid, title, description, recipient, value, ends) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Recipient, proposal.Value, proposal.Ends).Scan(&proposal.ID)
+	if proposal.Starts.Before(time.Now()) {
+		return errors.New("Invalid start date")
+	}
+
+	err := context.QueryRow("INSERT INTO proposals (userid, title, description, recipient, value, starts) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Recipient, proposal.Value, proposal.Starts).Scan(&proposal.ID)
 	proposalsCache.Delete(proposal.ID)
 	return err
 }

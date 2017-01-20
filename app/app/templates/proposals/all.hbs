@@ -7,7 +7,7 @@
         <th>Title</th>
         <th>Value</th>
         <th>Recipient</th>
-	    <th>Ends</th>
+	    <th>Starts</th>
         {{#if (eq currentUser.user.id "1")}}
             <th>Moderated</th>
         {{/if}}
@@ -20,7 +20,7 @@
         <td>{{#link-to "proposals.show" proposal.id}}{{proposal.title}}{{/link-to}}</td>
         <td>{{proposal.value}} &euro;</td>
         <td>{{proposal.recipient}}</td>
-        <td>{{moment-from-now proposal.ends}}</td>
+        <td>{{moment-from-now proposal.starts}}</td>
         {{#if (eq currentUser.user.id "1")}}
             {{#if (eq proposal.moderated true)}}
                 <td>Yes</td>
@@ -53,7 +53,7 @@
         <th>Title</th>
         <th>Value</th>
         <th>Recipient</th>
-	    <th>Ends</th>
+	    <th>Starts</th>
         {{#if (eq currentUser.user.id "1")}}
             <th>Moderated</th>
         {{/if}}
@@ -66,7 +66,7 @@
         <td>{{#link-to "proposals.show" proposal.id}}{{proposal.title}}{{/link-to}}</td>
         <td>{{proposal.value}} &euro;</td>
         <td>{{proposal.recipient}}</td>
-        <td>{{moment-from-now proposal.ends}}</td>
+        <td>{{moment-from-now proposal.starts}}</td>
         {{#if (eq currentUser.user.id "1")}}
             {{#if (eq proposal.moderated true)}}
                 <td>Yes</td>

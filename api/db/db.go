@@ -61,7 +61,7 @@ func GetDatabase() *sql.DB {
 				  description	text      	NOT NULL,
 				  recipient		text		NOT NULL,
 				  value			int			NOT NULL,
-				  ends			timestamp	NOT NULL,
+				  starts		timestamp	NOT NULL,
 				  votes	      	int       	DEFAULT 0,
 				  moderated     bool        DEFAULT false,
 				  CONSTRAINT  	fk_user		FOREIGN KEY (userid) REFERENCES users (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
@@ -85,7 +85,7 @@ func GetDatabase() *sql.DB {
 			`CREATE INDEX idx_proposals_moderated ON proposals(moderated)`,
 			`CREATE INDEX idx_proposals_value ON proposals(value)`,
 			`CREATE INDEX idx_proposals_userid ON proposals(userid)`,
-			`CREATE INDEX idx_proposals_ends ON proposals(ends)`,
+			`CREATE INDEX idx_proposals_starts ON proposals(starts)`,
 			`CREATE INDEX idx_votes_userid ON votes(userid)`,
 			`CREATE INDEX idx_votes_proposalid ON votes(proposalid)`,
 		}
