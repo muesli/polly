@@ -21,6 +21,7 @@ type proposalInfoResponse struct {
 	ID          int64     `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
+	User        int64     `json:"user"`
 	Recipient   string    `json:"recipient"`
 	Value       uint64    `json:"value"`
 	GrantType   string    `json:"granttype"`
@@ -65,6 +66,7 @@ func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) 
 		ID:          proposal.ID,
 		Title:       proposal.Title,
 		Description: proposal.Description,
+		User:        proposal.UserID,
 		Recipient:   proposal.Recipient,
 		Value:       proposal.Value,
 		Starts:      proposal.Starts,

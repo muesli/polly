@@ -28,7 +28,7 @@ func (r *ProposalResource) GetDoc() string {
 // GetParams returns the parameters supported by this API endpoint
 func (r *ProposalResource) GetParams() []*restful.Parameter {
 	params := []*restful.Parameter{}
-	// params = append(params, restful.QueryParameter("user_id", "id of a user").DataType("int64"))
+	params = append(params, restful.QueryParameter("user_id", "id of a user").DataType("int64"))
 	params = append(params, restful.QueryParameter("accepted", "only return accepted/rejected proposals").DataType("bool"))
 	params = append(params, restful.QueryParameter("granttype", "small or large").DataType("string"))
 	params = append(params, restful.QueryParameter("ended", "only returns finished proposals").DataType("bool"))
@@ -60,7 +60,7 @@ func (r *ProposalResource) GetByIDs(context smolder.APIContext, request *restful
 		}
 
 		// only admin gets to see all proposals before moderation
-		if authUser.ID == 1 || proposal.Moderated || proposal.Started(ctx) {
+		if authUser.ID == 1 || authUser.ID == proposal.UserID || (proposal.Moderated && proposal.Started(ctx)) {
 			resp.AddProposal(&proposal)
 		} else {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
@@ -82,6 +82,15 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		authUser = auth.(db.User)
 	}
 
+	userid := params["user_id"]
+	uid := -1
+	if len(userid) > 0 {
+		var err error
+		uid, err = strconv.Atoi(userid[0])
+		if err != nil {
+			uid = -1
+		}
+	}
 	accepted := params["accepted"]
 	granttype := params["granttype"]
 	ended := params["ended"]
@@ -129,6 +138,9 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		// only admin gets to see all proposals before moderation
 		if authUser.ID != 1 && (!proposal.Moderated || !proposal.Started(ctx)) {
 			add = false
+		}
+		if authUser.ID == int64(uid) && proposal.UserID == int64(uid) {
+			add = true
 		}
 
 		if add {
