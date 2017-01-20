@@ -75,7 +75,7 @@ func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) 
 		URL:         utils.BuildURL(ctx.Config.Web.BaseURL, *proposal),
 	}
 
-	if proposal.Value < 2500 {
+	if proposal.Value < uint64(ctx.Config.App.Proposals.SmallGrantValueThreshold) {
 		resp.GrantType = "small"
 	} else {
 		resp.GrantType = "large"

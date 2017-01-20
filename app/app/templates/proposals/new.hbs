@@ -12,7 +12,7 @@
         <br/>
         {{input type="text" value=recipient class="form-control" placeholder="Who's the recipient"}}
         <br/>
-        {{input type="text" value=value class="form-control" placeholder="The value in Euros"}}
+        {{input type="text" value=value class="form-control" placeholder=(concat "The value (max. " maxBudget " Euros for a micro-grant)")}}
         <br/>
         {{bootstrap-datepicker value=startdate startDate=minimumProposalStartDate format="yyyy/mm/dd" autoclose=true class="form-control" placeholder="Start date of the proposal"}}
       </div>

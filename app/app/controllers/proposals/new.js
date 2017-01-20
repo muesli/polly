@@ -11,8 +11,18 @@ export default Ember.Controller.extend({
   startdate: new Date(),
   maxmicrobudget: 0,
 
-  minimumProposalEndDate: Ember.computed(function() {
-      var date = moment().add(7, 'd').toDate();
+  maxBudget: Ember.computed('startdate', 'maxmicrobudget', function() {
+      this.store.query('budget', {
+          month: moment(this.get('startdate')).add(14, 'd').toDate().getMonth() + 1
+      }).then((budget) => {
+          this.set('maxmicrobudget', budget.objectAt(0).get('value'));
+      });
+
+      return this.get('maxmicrobudget');
+  }),
+
+  minimumProposalStartDate: Ember.computed(function() {
+      var date = moment().add(1, 'd').toDate();
       return moment(date).format('YYYY/MM/DD');
   }),
 

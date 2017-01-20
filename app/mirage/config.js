@@ -9,6 +9,7 @@ export default function() {
     this.passthrough('/proposals');
     this.passthrough('/proposals/:proposal_id');
     this.passthrough('/votes');
+    this.passthrough('/budgets');
 
 /*    this.get('/proposals', function() {
       return {

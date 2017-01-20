@@ -10,6 +10,7 @@ import (
 	"github.com/muesli/polly/api/db"
 	"github.com/muesli/polly/api/utils"
 
+	"github.com/muesli/polly/api/resources/budgets"
 	"github.com/muesli/polly/api/resources/proposals"
 	"github.com/muesli/polly/api/resources/sessions"
 	"github.com/muesli/polly/api/resources/users"
@@ -89,6 +90,7 @@ func main() {
 		&users.UserResource{},
 		&proposals.ProposalResource{},
 		&votes.VoteResource{},
+		&budgets.BudgetResource{},
 	)
 
 	if config.Settings.API.SwaggerFilePath != "" {

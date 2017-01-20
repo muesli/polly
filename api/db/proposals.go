@@ -82,9 +82,8 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 	}
 
 	if proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
-		minEndDate := time.Now().AddDate(0, 0, int(context.Config.App.Proposals.SmallGrantVoteMinDays))
-		if proposal.Ends.Before(minEndDate) {
-			proposal.Ends = minEndDate
+		if proposal.Value > uint64(context.SmallGrantMaxValue(uint(proposal.Ends(context).Month()))) {
+			return errors.New("Proposal value is too high")
 		}
 	}
 
@@ -97,11 +96,29 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 	return err
 }
 
+// Started returns true if a proposal has started
+func (proposal *Proposal) Started(context *PollyContext) bool {
+	return proposal.Starts.Before(time.Now())
+}
+
+// Ends returns when this proposal ends
+func (proposal *Proposal) Ends(context *PollyContext) time.Time {
+	return proposal.Starts.AddDate(0, 0, int(context.Config.App.Proposals.SmallGrantVoteRuntimeDays))
+}
+
 // Ended returns true if a proposal either ended or got rejected by votes
 func (proposal *Proposal) Ended(context *PollyContext) bool {
-	return proposal.Ends.Before(time.Now()) ||
+	return proposal.Ends(context).Before(time.Now()) ||
 		(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
 			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold))
+}
+
+// Accepted returns true if a proposal has finished and was accepted by poll
+func (proposal *Proposal) Accepted(context *PollyContext) bool {
+	return proposal.Ended(context) &&
+		(proposal.Value >= uint64(context.Config.App.Proposals.SmallGrantValueThreshold) ||
+			(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
+				proposal.Votes < uint64(context.Config.App.Proposals.SmallGrantVoteThreshold)))
 }
 
 // Vote marks a vote for a proposal
