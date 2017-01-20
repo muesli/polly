@@ -62,7 +62,6 @@ func (context *PollyContext) SmallGrantMaxValue(month uint) uint {
 		int(context.sumAcceptedSmallGrants(month))
 
 	// fmt.Println("smallgrantmax:", i)
-	return 1000
 
 	if i < 0 {
 		return 0
