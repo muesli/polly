@@ -13,7 +13,7 @@ type User struct {
 	About     string
 	Email     string
 	Activated bool
-	AuthToken string
+	AuthToken StringSlice
 }
 
 // LoadUserByID loads a user by ID from the database
@@ -59,7 +59,7 @@ func (context *PollyContext) GetUserByNameAndPassword(name, password string) (Us
 // GetUserByAccessToken loads a user by accesstoken from the database
 func (context *PollyContext) GetUserByAccessToken(token string) (interface{}, error) {
 	user := User{}
-	err := context.QueryRow("SELECT id, username, about, email, activated, authtoken FROM users WHERE authtoken = $1", token).Scan(&user.ID, &user.Username, &user.About, &user.Email, &user.Activated, &user.AuthToken)
+	err := context.QueryRow("SELECT id, username, about, email, activated, authtoken FROM users WHERE $1 = ANY(authtoken)", token).Scan(&user.ID, &user.Username, &user.About, &user.Email, &user.Activated, &user.AuthToken)
 
 	return user, err
 }
@@ -117,7 +117,7 @@ func (user *User) Save(context *PollyContext) error {
 		return err
 	}
 
-	user.AuthToken = uuid
+	user.AuthToken = StringSlice{uuid}
 	err = context.QueryRow("INSERT INTO users (username, password, about, email, authtoken) VALUES ($1, $3, $2, $1, $3) RETURNING id", user.Email, user.About, user.AuthToken).Scan(&user.ID)
 	usersCache.Delete(user.ID)
 	return err

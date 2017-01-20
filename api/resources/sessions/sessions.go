@@ -132,7 +132,7 @@ func (r *SessionResource) Post(context smolder.APIContext, request *restful.Requ
 		return
 	}
 
-	user.AuthToken = uuid
+	user.AuthToken = append(user.AuthToken, uuid)
 	err = user.Update(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
@@ -143,7 +143,7 @@ func (r *SessionResource) Post(context smolder.APIContext, request *restful.Requ
 		return
 	}
 
-	resp.IDToken = user.AuthToken
+	resp.IDToken = user.AuthToken[len(user.AuthToken)-1]
 	resp.UserID = user.ID
 	response.WriteHeaderAndEntity(http.StatusOK, resp)
 }

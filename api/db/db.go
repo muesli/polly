@@ -49,7 +49,7 @@ func GetDatabase() *sql.DB {
 				  about       	text,
 				  email       	text		NOT NULL,
 				  activated   	bool		DEFAULT false,
-				  authtoken   	text      	NOT NULL,
+				  authtoken   	text[]     	NOT NULL,
 				  CONSTRAINT  	uk_username	UNIQUE (username),
 				  CONSTRAINT  	uk_email 	UNIQUE (email)
 				)`,
