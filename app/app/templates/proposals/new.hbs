@@ -14,7 +14,11 @@
         <br/>
         {{input type="text" value=value class="form-control" placeholder=(concat "The value (max. " maxBudget " Euros for a micro-grant)")}}
         <br/>
-        {{bootstrap-datepicker value=startdate startDate=minimumProposalStartDate format="yyyy/mm/dd" autoclose=true class="form-control" placeholder="Start date of the proposal"}}
+        {{#if isMicroBudget}}
+        {{bootstrap-datepicker id="daypicker" value=startdate startDate=minimumProposalStartDate format="yyyy/mm/dd" autoclose=true class="form-control" placeholder="Start date of the proposal"}}
+        {{else}}
+        {{bootstrap-datepicker id="monthpicker" value=startdate startDate=minimumProposalStartDate format="yyyy/mm" minViewMode=1 autoclose=true class="form-control" placeholder="Which month to run this proposal in"}}
+        {{/if}}
       </div>
     </div>
 

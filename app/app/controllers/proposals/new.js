@@ -11,6 +11,11 @@ export default Ember.Controller.extend({
   startdate: new Date(),
   maxmicrobudget: 0,
 
+  isMicroBudget: Ember.computed('value', function() {
+      const max = this.get('maxmicrobudget');
+      return max === 0 || this.value === '' || parseInt(this.value) < max;
+  }),
+
   maxBudget: Ember.computed('startdate', 'maxmicrobudget', function() {
       this.store.query('budget', {
           month: moment(this.get('startdate')).add(14, 'd').toDate().getMonth() + 1
