@@ -8,6 +8,8 @@ export default Ember.Controller.extend({
 
     actions: {
       invalidateSession() {
+        this.store.unloadAll('vote');
+        this.store.unloadAll('proposal');
         this.get('session').invalidate();
       }
     }
