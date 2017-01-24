@@ -13,6 +13,11 @@
         "Email": {
             "AdminEmail":       "admin@domain.tld",
             "ReplyTo":          "no-reply@domain.tld",
+            "Mailman": {
+                "Name":          "Polly Mailing List",
+                "Address":       "mailinglist@domain.tld",
+                "BounceAddress": "bounces@domain.tld"
+            },
             "SMTP": {
                 "User":         "user@domain.tld",
                 "Password":     "password",
@@ -23,9 +28,7 @@
                 "User":         "user@domain.tld",
                 "Password":     "password",
                 "Server":       "imap.domain.tld",
-                "Port":         993,
-                "LastMessage":  "",
-                "LastSeen":     0
+                "Port":         993
             }
         },
         "PostgreSQLConnection": {

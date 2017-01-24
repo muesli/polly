@@ -67,19 +67,22 @@ type PostgreSQLConnection struct {
 type EmailConfig struct {
 	AdminEmail string
 	ReplyTo    string
-	SMTP       struct {
+	Mailman    struct {
+		Name          string
+		Address       string
+		BounceAddress string
+	}
+	SMTP struct {
 		User     string
 		Password string
 		Server   string
 		Port     int
 	}
 	IMAP struct {
-		User        string
-		Password    string
-		Server      string
-		Port        int
-		LastMessage string
-		LastSeen    int64
+		User     string
+		Password string
+		Server   string
+		Port     int
 	}
 }
 
