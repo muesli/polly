@@ -8,6 +8,7 @@ import (
 
 	"github.com/muesli/polly/api/config"
 	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/mailman"
 	"github.com/muesli/polly/api/utils"
 
 	"github.com/muesli/polly/api/resources/budgets"
@@ -68,11 +69,14 @@ func main() {
 
 	config.ParseSettings()
 	db.SetupPostgres(config.Settings.Connections.PostgreSQLConnection)
-	utils.SetupEmailTemplates(*config.Settings)
 
 	context := &db.PollyContext{
 		Config: *config.Settings,
 	}
+
+	utils.SetupEmailTemplates(*config.Settings)
+	mailman.SetupMailmanContext(context.NewAPIContext().(*db.PollyContext))
+	go mailman.RunLoop()
 
 	// Setup web-service
 	smolderConfig := smolder.APIConfig{
