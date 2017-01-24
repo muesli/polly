@@ -76,6 +76,11 @@ func GetDatabase() *sql.DB {
 				  CONSTRAINT  	fk_user				FOREIGN KEY (userid) REFERENCES users (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
 				  CONSTRAINT  	fk_proposal			FOREIGN KEY (proposalid) REFERENCES proposals (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 				)`,
+			`CREATE TABLE IF NOT EXISTS mailman
+				(
+				  mailbox      	text				PRIMARY KEY,
+				  lastseen    	bigserial			NOT NULL
+				)`,
 		}
 
 		// FIXME: add IF NOT EXISTS to CREATE INDEX statements (coming in v9.5)
