@@ -7,7 +7,7 @@ import (
 	"github.com/muesli/polly/api/config"
 	"github.com/muesli/polly/api/db"
 
-	"github.com/go-gomail/gomail"
+	"github.com/muesli/gomail"
 )
 
 var (

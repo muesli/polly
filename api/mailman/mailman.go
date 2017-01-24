@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gomail/gomail"
+	"github.com/muesli/gomail"
 	"github.com/mxk/go-imap/imap"
 
 	"github.com/muesli/polly/api/db"
