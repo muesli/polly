@@ -39,7 +39,7 @@ export default Ember.Controller.extend({
   isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', function() {
       return this.title.length > 0 && this.description.length > 0 &&
              this.activities.length > 0 && this.contact.length > 0 &&
-             this.recipient.length > 0 && this.recipient2.length > 0 &&
+             this.recipient.length > 0 && (this.value <= this.maxmicrobudget || this.recipient2.length > 0) &&
              parseInt(this.value) > 0 && parseInt(this.value) <= this.maxvalue &&
              this.startdate.getFullYear() > 0;
   }),

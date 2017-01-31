@@ -15,8 +15,10 @@
         {{input type="text" value=contact class="form-control" placeholder="Your contact information"}}
         <br/>
         {{input type="text" value=recipient class="form-control" placeholder="Who's the recipient"}}
+        {{#if isMicroBudget}}
         <br/>
         {{input type="text" value=recipient2 class="form-control" placeholder="Who's the second recipient"}}
+        {{/if}}
         <br/>
         {{input type="text" value=value class="form-control" placeholder=(concat "The value (max. " maxBudget " Euros for a micro-grant)")}}
         <br/>
