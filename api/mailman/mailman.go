@@ -131,6 +131,10 @@ func RunLoop() {
 
 			// Process command data
 			for _, rsp = range cmd.Data {
+				if uint64(rsp.MessageInfo().UID) < mm.LastSeen+1 {
+					continue
+				}
+
 				header := imap.AsBytes(rsp.MessageInfo().Attrs["RFC822.HEADER"])
 				body := string(imap.AsBytes(rsp.MessageInfo().Attrs["RFC822.TEXT"]))
 				if msg, _ := mail.ReadMessage(bytes.NewReader(header)); msg != nil {
