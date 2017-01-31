@@ -60,8 +60,7 @@ func SendInvitation(user *db.User) {
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
-	m.SetHeader("To", settings.Connections.Email.
-		AdminEmail) // FIXME: change to user.Email in production
+	m.SetHeader("To", user.Email)
 	//	m.SetAddressHeader("Cc", "foo@foobar.com", "Joe")
 	//	m.Attach("/tmp/attachment.jpg")
 
