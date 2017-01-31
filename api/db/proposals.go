@@ -68,7 +68,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 
 // Update a proposal in the database
 func (proposal *Proposal) Update(context *PollyContext) error {
-	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, contact = $3, recipient = $4, recipient2 = $5, value = $6, starts = $7, moderated = $8 WHERE id = $8", proposal.Title, proposal.Description, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.Moderated, proposal.ID)
+	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, contact = $3, recipient = $4, recipient2 = $5, value = $6, starts = $7, moderated = $8 WHERE id = $9", proposal.Title, proposal.Description, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.Moderated, proposal.ID)
 	if err != nil {
 		panic(err)
 	}
