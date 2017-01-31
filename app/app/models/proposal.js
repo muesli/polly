@@ -5,6 +5,7 @@ export default DS.Model.extend({
   description: DS.attr('string'),
   url: DS.attr('string'),
   user: DS.belongsTo('user'),
+  contact: DS.attr('string'),
   recipient: DS.attr('string'),
   recipient2: DS.attr('string'),
   value: DS.attr('number'),

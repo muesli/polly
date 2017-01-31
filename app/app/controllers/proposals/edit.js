@@ -12,8 +12,14 @@ export default Ember.Controller.extend({
   description: Ember.computed(function() {
       return this.get('proposal').get('description');
   }),
+  contact: Ember.computed(function() {
+      return this.get('proposal').get('contact');
+  }),
   recipient: Ember.computed(function() {
       return this.get('proposal').get('recipient');
+  }),
+  recipient2: Ember.computed(function() {
+      return this.get('proposal').get('recipient2');
   }),
   value: Ember.computed(function() {
       return this.get('proposal').get('value');
@@ -37,16 +43,19 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'title', 'description', 'value', 'startdate', function() {
+  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', function() {
       const title = this.get('title');
       const description = this.get('description');
+      const contact = this.get('contact');
       const recipient = this.get('recipient');
+      const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
 
       return title.length > 0 && description.length > 0 &&
-             recipient.length > 0 && parseInt(value) > 0 &&
-             startdate.getFullYear() > 0;
+             contact.length > 0 &&
+             recipient.length > 0 && recipient2.length > 0 &&
+             parseInt(value) > 0 && startdate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
@@ -58,7 +67,9 @@ export default Ember.Controller.extend({
 
       const title = this.get('title');
       const description = this.get('description');
+      const contact = this.get('contact');
       const recipient = this.get('recipient');
+      const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
 
@@ -66,7 +77,9 @@ export default Ember.Controller.extend({
 
       proposal.set('title', title);
       proposal.set('description', description);
+      proposal.set('contact', contact);
       proposal.set('recipient', recipient);
+      proposal.set('recipient2', recipient2);
       proposal.set('value', value);
       proposal.set('starts', startdate);
 
