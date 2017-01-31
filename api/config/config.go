@@ -97,6 +97,8 @@ type EmailTemplate struct {
 type Templates struct {
 	Invitation         EmailTemplate
 	ModerationProposal EmailTemplate
+	ProposalAccepted   EmailTemplate
+	ProposalStarted    EmailTemplate
 }
 
 var (

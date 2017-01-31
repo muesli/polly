@@ -15,24 +15,47 @@ var (
 	settings  config.Data
 )
 
+// TemplateHelper combines multiple db-structs to make them become
+// accessible from the template
+type TemplateHelper struct {
+	User     *db.User
+	Proposal *db.Proposal
+	BaseURL  string
+}
+
 // SetupEmailTemplates compiles the email templates
 func SetupEmailTemplates(c config.Data) {
 	settings = c
 	templates["invitation"] = config.EmailTemplate{
 		Subject: c.App.Templates.Invitation.Subject,
-		Text:    "Hello {{.Email}}!\n\nYou've been invited to Polly!\nJoin here: " + c.Web.BaseURL + "signup/{{.AuthToken}}",
-		HTML:    "Hello <b>{{.Email}}</b>!<br/><br/>You've been invited to Polly!<br/>Join here: " + c.Web.BaseURL + "signup/{{.AuthToken}}",
+		Text:    c.App.Templates.Invitation.Text,
+		HTML:    c.App.Templates.Invitation.HTML,
 	}
 	templates["moderation_proposal"] = config.EmailTemplate{
 		Subject: c.App.Templates.ModerationProposal.Subject,
-		Text:    "Hello Admin!\n\nA new proposal '{{.Title}}' has been created and awaits moderation!\nClick here: " + c.Web.BaseURL + "proposals/{{.ID}}",
-		HTML:    "Hello <b>Admin</b>!<br/><br/>A new proposal <b>{{.Title}}</b> has been created and awaits moderation!<br/>Click here: " + c.Web.BaseURL + "proposals/{{.ID}}",
+		Text:    c.App.Templates.ModerationProposal.Text,
+		HTML:    c.App.Templates.ModerationProposal.HTML,
+	}
+	templates["proposal_accepted"] = config.EmailTemplate{
+		Subject: c.App.Templates.ProposalAccepted.Subject,
+		Text:    c.App.Templates.ProposalAccepted.Text,
+		HTML:    c.App.Templates.ProposalAccepted.HTML,
+	}
+	templates["proposal_started"] = config.EmailTemplate{
+		Subject: c.App.Templates.ProposalStarted.Subject,
+		Text:    c.App.Templates.ProposalStarted.Text,
+		HTML:    c.App.Templates.ProposalStarted.HTML,
 	}
 }
 
 // SendInvitation sends out an email, inviting a user to join polly
 func SendInvitation(user *db.User) {
 	tmpl := templates["invitation"]
+
+	th := TemplateHelper{
+		User:    user,
+		BaseURL: settings.Web.BaseURL,
+	}
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
@@ -44,11 +67,11 @@ func SendInvitation(user *db.User) {
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("invitation_text").Parse(tmpl.Text))
-		return t.Execute(w, *user)
+		return t.Execute(w, th)
 	})
 	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
 		t := template.Must(template.New("invitation_html").Parse(tmpl.HTML))
-		return t.Execute(w, *user)
+		return t.Execute(w, th)
 	})
 
 	d := gomail.NewDialer(settings.Connections.Email.SMTP.Server, settings.Connections.Email.SMTP.Port,
@@ -62,6 +85,11 @@ func SendInvitation(user *db.User) {
 func SendModerationRequest(proposal *db.Proposal) {
 	tmpl := templates["moderation_proposal"]
 
+	th := TemplateHelper{
+		Proposal: proposal,
+		BaseURL:  settings.Web.BaseURL,
+	}
+
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
 	m.SetHeader("To", settings.Connections.Email.AdminEmail)
@@ -69,11 +97,11 @@ func SendModerationRequest(proposal *db.Proposal) {
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("moderation_proposal_text").Parse(tmpl.Text))
-		return t.Execute(w, *proposal)
+		return t.Execute(w, th)
 	})
 	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
 		t := template.Must(template.New("moderation_proposal_html").Parse(tmpl.HTML))
-		return t.Execute(w, *proposal)
+		return t.Execute(w, th)
 	})
 
 	d := gomail.NewDialer(settings.Connections.Email.SMTP.Server, settings.Connections.Email.SMTP.Port,
