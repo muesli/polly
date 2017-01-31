@@ -6,6 +6,7 @@ export default DS.Model.extend({
   url: DS.attr('string'),
   user: DS.belongsTo('user'),
   recipient: DS.attr('string'),
+  recipient2: DS.attr('string'),
   value: DS.attr('number'),
   granttype: DS.attr('string'),
   starts: DS.attr('isodate'),

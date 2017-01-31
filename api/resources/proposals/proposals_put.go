@@ -78,6 +78,7 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 	proposal.Title = pps.Proposal.Title
 	proposal.Description = pps.Proposal.Description
 	proposal.Recipient = pps.Proposal.Recipient
+	proposal.Recipient2 = pps.Proposal.Recipient2
 	proposal.Value = pps.Proposal.Value
 	proposal.Starts = pps.Proposal.Starts
 

@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
   title: "",
   description: "",
   recipient: "",
+  recipient2: "",
   value: "",
   responseMessage: "",
   errorMessage: "",
@@ -31,10 +32,10 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'title', 'description', 'value', 'startdate', function() {
+  isValid: Ember.computed('recipient', 'recipient2', 'title', 'description', 'value', 'startdate', function() {
       return this.title.length > 0 && this.description.length > 0 &&
-             this.recipient.length > 0 && parseInt(this.value) > 0 &&
-             this.startdate.getFullYear() > 0;
+             this.recipient.length > 0 && this.recipient2.length > 0 &&
+             parseInt(this.value) > 0 && this.startdate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
@@ -57,6 +58,7 @@ export default Ember.Controller.extend({
           this.set('title', '');
           this.set('description', '');
           this.set('recipient', '');
+          this.set('recipient2', '');
           this.set('value', '');
           this.set('startdate', new Date());
         },

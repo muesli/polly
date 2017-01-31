@@ -60,6 +60,7 @@ func GetDatabase() *sql.DB {
 				  title       	text      	NOT NULL,
 				  description	text      	NOT NULL,
 				  recipient		text		NOT NULL,
+				  recipient2	text		NOT NULL,
 				  value			int			NOT NULL,
 				  starts		timestamp	NOT NULL,
 				  votes	      	int       	DEFAULT 0,
