@@ -16,6 +16,7 @@ type ProposalPostStruct struct {
 	Proposal struct {
 		Title       string    `json:"title"`
 		Description string    `json:"description"`
+		Activities  string    `json:"activities"`
 		Contact     string    `json:"contact"`
 		Recipient   string    `json:"recipient"`
 		Recipient2  string    `json:"recipient2"`
@@ -65,6 +66,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Req
 		UserID:      authUser.ID,
 		Title:       pps.Proposal.Title,
 		Description: pps.Proposal.Description,
+		Activities:  pps.Proposal.Activities,
 		Contact:     pps.Proposal.Contact,
 		Recipient:   pps.Proposal.Recipient,
 		Recipient2:  pps.Proposal.Recipient2,
