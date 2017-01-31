@@ -72,3 +72,7 @@ func (context *PollyContext) SmallGrantMaxValue(month uint) uint {
 
 	return uint(i)
 }
+
+func (context *PollyContext) GrantMaxValue() uint {
+	return context.Config.App.Proposals.MaxGrantValue
+}

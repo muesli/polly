@@ -52,7 +52,7 @@ func (r *BudgetResource) Get(context smolder.APIContext, request *restful.Reques
 	startMonth := time.Date(time.Now().Year(), time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	periodEnd := startMonth.AddDate(0, 1, -1)
 	periodEnd = time.Date(periodEnd.Year(), periodEnd.Month(), periodEnd.Day(), 23, 59, 59, 0, time.UTC)
-	resp.Budgets = append(resp.Budgets, prepareBudgetResponse(context, uint(month), ctx.SmallGrantMaxValue(uint(month)), periodEnd))
+	resp.Budgets = append(resp.Budgets, prepareBudgetResponse(context, uint(month), ctx.SmallGrantMaxValue(uint(month)), ctx.GrantMaxValue(), periodEnd))
 
 	resp.Send(response)
 }

@@ -1,6 +1,10 @@
 package budgets
 
-import "github.com/muesli/smolder"
+import (
+	"time"
+
+	"github.com/muesli/smolder"
+)
 
 // BudgetResponse is the common response to 'budget' requests
 type BudgetResponse struct {
@@ -10,8 +14,10 @@ type BudgetResponse struct {
 }
 
 type budgetInfoResponse struct {
-	ID    uint `json:"id"`
-	Value uint `json:"value"`
+	ID        uint      `json:"id"`
+	Value     uint      `json:"value"`
+	MaxValue  uint      `json:"maxvalue"`
+	PeriodEnd time.Time `json:"period_end"`
 }
 
 // Init a new response
@@ -34,11 +40,13 @@ func (r *BudgetResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareBudgetResponse(context smolder.APIContext, month uint, budget uint) budgetInfoResponse {
+func prepareBudgetResponse(context smolder.APIContext, month uint, budget, maxBudget uint, periodEnd time.Time) budgetInfoResponse {
 	//	ctx := context.(*db.PollyContext)
 	resp := budgetInfoResponse{
-		ID:    month,
-		Value: budget,
+		ID:        month,
+		Value:     budget,
+		MaxValue:  maxBudget,
+		PeriodEnd: periodEnd,
 	}
 
 	return resp
