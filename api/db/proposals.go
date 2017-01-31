@@ -7,18 +7,19 @@ import (
 
 // Proposal represents the db schema of a proposal
 type Proposal struct {
-	ID          int64
-	UserID      int64
-	Title       string
-	Description string
-	Activities  string
-	Contact     string
-	Recipient   string
-	Recipient2  string
-	Value       uint64
-	Starts      time.Time
-	Votes       uint64
-	Moderated   bool
+	ID           int64
+	UserID       int64
+	Title        string
+	Description  string
+	Activities   string
+	Contact      string
+	Recipient    string
+	Recipient2   string
+	Value        uint64
+	Starts       time.Time
+	Votes        uint64
+	Moderated    bool
+	StartTrigger bool
 }
 
 // LoadProposalByID loads a proposal by ID from the database
@@ -28,7 +29,7 @@ func (context *PollyContext) LoadProposalByID(id int64) (Proposal, error) {
 		return proposal, ErrInvalidID
 	}
 
-	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated FROM proposals WHERE id = $1", id).Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated)
+	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated, started FROM proposals WHERE id = $1", id).Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated, &proposal.StartTrigger)
 	return proposal, err
 }
 
@@ -48,7 +49,7 @@ func (context *PollyContext) GetProposalByID(id int64) (Proposal, error) {
 func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	proposals := []Proposal{}
 
-	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated FROM proposals ORDER BY starts ASC")
+	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated, started FROM proposals ORDER BY starts ASC")
 	if err != nil {
 		return proposals, err
 	}
@@ -56,7 +57,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	defer rows.Close()
 	for rows.Next() {
 		proposal := Proposal{}
-		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated)
+		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated, &proposal.StartTrigger)
 		if err != nil {
 			return proposals, err
 		}
@@ -69,7 +70,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 
 // Update a proposal in the database
 func (proposal *Proposal) Update(context *PollyContext) error {
-	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, activities = $3, contact = $4, recipient = $5, recipient2 = $6, value = $7, starts = $8, moderated = $9 WHERE id = $10", proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.Moderated, proposal.ID)
+	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, activities = $3, contact = $4, recipient = $5, recipient2 = $6, value = $7, starts = $8, moderated = $9, started = $10 WHERE id = $11", proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.Moderated, proposal.StartTrigger, proposal.ID)
 	if err != nil {
 		panic(err)
 	}

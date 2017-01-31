@@ -3,6 +3,7 @@ package mailman
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/mail"
 	"strconv"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/mxk/go-imap/imap"
 
 	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/utils"
 )
 
 var (
@@ -54,6 +56,29 @@ func sendMail(tos []string, from, subject, body, mid, contenttype, contenttypetr
 	err = s.Send(context.Config.Connections.Email.Mailman.Address, tos, m)
 	if err != nil {
 		panic(err)
+	}
+}
+
+// RunProposalLoop watches freshly started proposals and sends out a reminder email
+func RunProposalLoop() {
+	for {
+		proposals, err := context.LoadAllProposals()
+		if err != nil {
+			log.Println("ERROR: ", err)
+			continue
+		}
+
+		for _, p := range proposals {
+			if p.Moderated && !p.StartTrigger && p.Starts.Before(time.Now()) {
+				log.Printf("Proposal '%s' started. Sending out reminder emails...\n", p.Title)
+				utils.SendProposalStarted(p)
+
+				p.StartTrigger = true
+				p.Update(context)
+			}
+		}
+
+		time.Sleep(5 * time.Minute)
 	}
 }
 
