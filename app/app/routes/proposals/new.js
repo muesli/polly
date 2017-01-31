@@ -10,8 +10,8 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
      setupController(controller, models) {
        controller.set('budget', models.budget);
-       this.set('errorMessage', '');
-       this.set('responseMessage', '');
-       this.set('progressMessage', '');
+       controller.set('errorMessage', '');
+       controller.set('responseMessage', '');
+       controller.set('progressMessage', '');
      }
 });
