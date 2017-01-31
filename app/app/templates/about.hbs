@@ -2,3 +2,8 @@
 
 <br/>
 <h4>So much to say, I just don't know what...</h4>
+
+{{#if session.isAuthenticated}}
+<br/>
+<h4>You are currently logged in as {{currentUser.user.email}}</h4>
+{{/if}}
