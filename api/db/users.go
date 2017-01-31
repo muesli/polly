@@ -118,7 +118,7 @@ func (user *User) Save(context *PollyContext) error {
 	}
 
 	user.AuthToken = StringSlice{uuid}
-	err = context.QueryRow("INSERT INTO users (username, password, about, email, authtoken) VALUES ($1, $3, $2, $1, $3) RETURNING id", user.Email, user.About, user.AuthToken).Scan(&user.ID)
+	err = context.QueryRow("INSERT INTO users (username, password, about, email, authtoken) VALUES ($1, $4, $2, $1, $3) RETURNING id", user.Email, user.About, user.AuthToken, uuid).Scan(&user.ID)
 	usersCache.Delete(user.ID)
 	return err
 }
