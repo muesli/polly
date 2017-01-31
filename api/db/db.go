@@ -62,7 +62,7 @@ func GetDatabase() *sql.DB {
 				  activities	text      	NOT NULL,
 				  contact		text      	NOT NULL,
 				  recipient		text		NOT NULL,
-				  recipient2	text		NOT NULL,
+				  recipient2	text,
 				  value			int			NOT NULL,
 				  starts		timestamp	NOT NULL,
 				  votes	      	int       	DEFAULT 0,
