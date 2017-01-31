@@ -65,7 +65,7 @@ export default Ember.Controller.extend({
 
       return title.length > 0 && description.length > 0 &&
              activities.length > 0 && contact.length > 0 &&
-             recipient.length > 0 && (value <= this.maxmicrobudget || recipient2.length > 0) &&
+             recipient.length > 0 && (value < this.maxmicrobudget || recipient2.length > 0) &&
              parseInt(value) > 0 && parseInt(value) <= this.maxvalue &&
              startdate.getFullYear() > 0;
   }),

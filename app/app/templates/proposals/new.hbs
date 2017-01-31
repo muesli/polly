@@ -15,7 +15,7 @@
         {{input type="text" value=contact class="form-control" placeholder="Your contact information"}}
         <br/>
         {{input type="text" value=recipient class="form-control" placeholder="Who's the recipient"}}
-        {{#if isMicroBudget}}
+        {{#if (eq isMicroBudget false)}}
         <br/>
         {{input type="text" value=recipient2 class="form-control" placeholder="Who's the second recipient"}}
         {{/if}}
