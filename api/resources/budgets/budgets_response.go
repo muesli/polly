@@ -14,10 +14,11 @@ type BudgetResponse struct {
 }
 
 type budgetInfoResponse struct {
-	ID        uint      `json:"id"`
-	Value     uint      `json:"value"`
-	MaxValue  uint      `json:"maxvalue"`
-	PeriodEnd time.Time `json:"period_end"`
+	ID                  uint      `json:"id"`
+	Value               uint      `json:"value"`
+	MaxValue            uint      `json:"maxvalue"`
+	PeriodEnd           time.Time `json:"period_end"`
+	LargeGrantPeriodEnd time.Time `json:"large_grant_period_end"`
 }
 
 // Init a new response
@@ -40,13 +41,14 @@ func (r *BudgetResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareBudgetResponse(context smolder.APIContext, month uint, budget, maxBudget uint, periodEnd time.Time) budgetInfoResponse {
+func prepareBudgetResponse(context smolder.APIContext, month uint, budget, maxBudget uint, periodEnd, largeGrantPeriodEnd time.Time) budgetInfoResponse {
 	//	ctx := context.(*db.PollyContext)
 	resp := budgetInfoResponse{
-		ID:        month,
-		Value:     budget,
-		MaxValue:  maxBudget,
-		PeriodEnd: periodEnd,
+		ID:                  month,
+		Value:               budget,
+		MaxValue:            maxBudget,
+		PeriodEnd:           periodEnd,
+		LargeGrantPeriodEnd: largeGrantPeriodEnd,
 	}
 
 	return resp
