@@ -63,10 +63,14 @@ func RunLoop() {
 		c   *imap.Client
 		cmd *imap.Command
 		rsp *imap.Response
+		err error
 	)
 
 	// Connect to the server
-	c, _ = imap.DialTLS(context.Config.Connections.Email.IMAP.Server+":"+strconv.FormatInt(int64(context.Config.Connections.Email.IMAP.Port), 10), nil)
+	c, err = imap.DialTLS(context.Config.Connections.Email.IMAP.Server+":"+strconv.FormatInt(int64(context.Config.Connections.Email.IMAP.Port), 10), nil)
+	if err != nil || c == nil || c.Data == nil {
+		panic(err)
+	}
 
 	// Print server greeting (first response in the unilateral server data queue)
 	fmt.Println("IMAP Server says hello:", c.Data[0].Info)
