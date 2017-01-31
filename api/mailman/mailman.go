@@ -119,8 +119,9 @@ func RunLoop() {
 		}
 
 		// Fetch new mails
+		startFromID := mm.LastSeen + 1
 		set, _ := imap.NewSeqSet("")
-		set.Add(strconv.FormatUint(mm.LastSeen+1, 10) + ":*")
+		set.Add(strconv.FormatUint(startFromID, 10) + ":*")
 		cmd, _ = c.UIDFetch(set, "RFC822.HEADER", "RFC822.TEXT")
 
 		// Process responses while the command is running
@@ -131,7 +132,7 @@ func RunLoop() {
 
 			// Process command data
 			for _, rsp = range cmd.Data {
-				if uint64(rsp.MessageInfo().UID) < mm.LastSeen+1 {
+				if uint64(rsp.MessageInfo().UID) < startFromID {
 					continue
 				}
 
