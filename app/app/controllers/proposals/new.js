@@ -4,6 +4,7 @@ import moment from 'moment';
 export default Ember.Controller.extend({
   title: "",
   description: "",
+  activities: "",
   contact: "",
   recipient: "",
   recipient2: "",
@@ -35,7 +36,7 @@ export default Ember.Controller.extend({
 
   isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', function() {
       return this.title.length > 0 && this.description.length > 0 &&
-             this.contact.length > 0 &&
+             this.activities.length > 0 && this.contact.length > 0 &&
              this.recipient.length > 0 && this.recipient2.length > 0 &&
              parseInt(this.value) > 0 && this.startdate.getFullYear() > 0;
   }),
@@ -49,18 +50,20 @@ export default Ember.Controller.extend({
 
       const title = this.get('title');
       const description = this.get('description');
+      const activities = this.get('activities');
       const contact = this.get('contact');
       const recipient = this.get('recipient');
       const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
-      const newProposal = this.store.createRecord('proposal', { title: title, description: description, contact: contact, recipient: recipient, recipient2: recipient2, value: value, starts: startdate });
+      const newProposal = this.store.createRecord('proposal', { title: title, description: description, activities: activities, contact: contact, recipient: recipient, recipient2: recipient2, value: value, starts: startdate });
       newProposal.save().then(
         (/*proposal*/) => {
           this.set('responseMessage', `Your proposal is now awaiting moderation. Thank you!`);
           this.set('progressMessage', '');
           this.set('title', '');
           this.set('description', '');
+          this.set('activities', '');
           this.set('contact', '');
           this.set('recipient', '');
           this.set('recipient2', '');

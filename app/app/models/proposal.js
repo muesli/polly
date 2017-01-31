@@ -3,6 +3,7 @@ import DS from 'ember-data';
 export default DS.Model.extend({
   title: DS.attr('string'),
   description: DS.attr('string'),
+  activities: DS.attr('string'),
   url: DS.attr('string'),
   user: DS.belongsTo('user'),
   contact: DS.attr('string'),

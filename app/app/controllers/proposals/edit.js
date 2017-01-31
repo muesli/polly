@@ -12,6 +12,9 @@ export default Ember.Controller.extend({
   description: Ember.computed(function() {
       return this.get('proposal').get('description');
   }),
+  activities: Ember.computed(function() {
+      return this.get('proposal').get('activities');
+  }),
   contact: Ember.computed(function() {
       return this.get('proposal').get('contact');
   }),
@@ -43,9 +46,10 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', function() {
+  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'activities', 'value', 'startdate', function() {
       const title = this.get('title');
       const description = this.get('description');
+      const activities = this.get('activities');
       const contact = this.get('contact');
       const recipient = this.get('recipient');
       const recipient2 = this.get('recipient2');
@@ -53,7 +57,7 @@ export default Ember.Controller.extend({
       const startdate = this.get('startdate');
 
       return title.length > 0 && description.length > 0 &&
-             contact.length > 0 &&
+             activities.length > 0 && contact.length > 0 &&
              recipient.length > 0 && recipient2.length > 0 &&
              parseInt(value) > 0 && startdate.getFullYear() > 0;
   }),
@@ -67,6 +71,7 @@ export default Ember.Controller.extend({
 
       const title = this.get('title');
       const description = this.get('description');
+      const activities = this.get('activities');
       const contact = this.get('contact');
       const recipient = this.get('recipient');
       const recipient2 = this.get('recipient2');
@@ -77,6 +82,7 @@ export default Ember.Controller.extend({
 
       proposal.set('title', title);
       proposal.set('description', description);
+      proposal.set('activities', activities);
       proposal.set('contact', contact);
       proposal.set('recipient', recipient);
       proposal.set('recipient2', recipient2);
