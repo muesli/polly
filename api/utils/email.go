@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"io"
 	"text/template"
 
@@ -61,9 +62,13 @@ func SendInvitation(user *db.User) {
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
 	m.SetHeader("To", settings.Connections.Email.
 		AdminEmail) // FIXME: change to user.Email in production
-	m.SetHeader("Subject", tmpl.Subject)
 	//	m.SetAddressHeader("Cc", "foo@foobar.com", "Joe")
 	//	m.Attach("/tmp/attachment.jpg")
+
+	var buf bytes.Buffer
+	t := template.Must(template.New("invitation_subject").Parse(tmpl.Subject))
+	t.Execute(&buf, th)
+	m.SetHeader("Subject", buf.String())
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("invitation_text").Parse(tmpl.Text))
@@ -93,7 +98,11 @@ func SendModerationRequest(proposal *db.Proposal) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
 	m.SetHeader("To", settings.Connections.Email.AdminEmail)
-	m.SetHeader("Subject", tmpl.Subject)
+
+	var buf bytes.Buffer
+	t := template.Must(template.New("moderation_proposal_subject").Parse(tmpl.Subject))
+	t.Execute(&buf, th)
+	m.SetHeader("Subject", buf.String())
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("moderation_proposal_text").Parse(tmpl.Text))
@@ -124,7 +133,11 @@ func SendProposalAccepted(user *db.User, proposal *db.Proposal) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
 	m.SetHeader("To", settings.Connections.Email.AdminEmail)
-	m.SetHeader("Subject", tmpl.Subject)
+
+	var buf bytes.Buffer
+	t := template.Must(template.New("proposal_accepted_subject").Parse(tmpl.Subject))
+	t.Execute(&buf, th)
+	m.SetHeader("Subject", buf.String())
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("proposal_accepted_text").Parse(tmpl.Text))
@@ -154,7 +167,11 @@ func SendProposalStarted(proposal db.Proposal) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", settings.Connections.Email.ReplyTo)
 	m.SetHeader("To", settings.Connections.Email.Mailman.Address)
-	m.SetHeader("Subject", tmpl.Subject)
+
+	var buf bytes.Buffer
+	t := template.Must(template.New("proposal_started_subject").Parse(tmpl.Subject))
+	t.Execute(&buf, th)
+	m.SetHeader("Subject", buf.String())
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
 		t := template.Must(template.New("proposal_started_text").Parse(tmpl.Text))
