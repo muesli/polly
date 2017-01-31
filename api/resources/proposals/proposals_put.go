@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/muesli/polly/api/db"
+	"github.com/muesli/polly/api/utils"
 
 	"github.com/emicklei/go-restful"
 	"github.com/muesli/smolder"
@@ -72,9 +73,6 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 		return
 	}
 
-	if auth.(db.User).ID == 1 {
-		proposal.Moderated = pps.Proposal.Moderated
-	}
 	proposal.Title = pps.Proposal.Title
 	proposal.Description = pps.Proposal.Description
 	proposal.Activities = pps.Proposal.Activities
@@ -83,6 +81,18 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 	proposal.Recipient2 = pps.Proposal.Recipient2
 	proposal.Value = pps.Proposal.Value
 	proposal.Starts = pps.Proposal.Starts
+
+	if auth.(db.User).ID == 1 {
+		if !proposal.Moderated && pps.Proposal.Moderated {
+			proposalAuthor, uerr := context.(*db.PollyContext).GetUserByID(proposal.UserID)
+			if uerr != nil {
+				panic(uerr)
+			}
+			utils.SendProposalAccepted(&proposalAuthor, &proposal)
+		}
+
+		proposal.Moderated = pps.Proposal.Moderated
+	}
 
 	err = proposal.Update(context.(*db.PollyContext))
 	if err != nil {

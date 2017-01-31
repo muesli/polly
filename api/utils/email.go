@@ -110,3 +110,34 @@ func SendModerationRequest(proposal *db.Proposal) {
 		panic(err)
 	}
 }
+
+// SendProposalAccepted sends out an email to the proposal author, when their proposal got accepted
+func SendProposalAccepted(user *db.User, proposal *db.Proposal) {
+	tmpl := templates["proposal_accepted"]
+
+	th := TemplateHelper{
+		User:     user,
+		Proposal: proposal,
+		BaseURL:  settings.Web.BaseURL,
+	}
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", settings.Connections.Email.ReplyTo)
+	m.SetHeader("To", settings.Connections.Email.AdminEmail)
+	m.SetHeader("Subject", tmpl.Subject)
+
+	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
+		t := template.Must(template.New("proposal_accepted_text").Parse(tmpl.Text))
+		return t.Execute(w, th)
+	})
+	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
+		t := template.Must(template.New("proposal_accepted_html").Parse(tmpl.HTML))
+		return t.Execute(w, th)
+	})
+
+	d := gomail.NewDialer(settings.Connections.Email.SMTP.Server, settings.Connections.Email.SMTP.Port,
+		settings.Connections.Email.SMTP.User, settings.Connections.Email.SMTP.Password)
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
+}
