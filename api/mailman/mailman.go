@@ -84,6 +84,9 @@ func RunLoop() {
 
 	// List all top-level mailboxes, wait for the command to finish
 	cmd, _ = imap.Wait(c.List("", "%"))
+	if cmd == nil {
+		return
+	}
 
 	// Print mailbox information
 	fmt.Println("\nTop-level mailboxes:")
