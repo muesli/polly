@@ -157,11 +157,11 @@ func SendProposalStarted(proposal db.Proposal) {
 	m.SetHeader("Subject", tmpl.Subject)
 
 	m.AddAlternativeWriter("text/plain", func(w io.Writer) error {
-		t := template.Must(template.New("proposal_accepted_text").Parse(tmpl.Text))
+		t := template.Must(template.New("proposal_started_text").Parse(tmpl.Text))
 		return t.Execute(w, th)
 	})
 	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
-		t := template.Must(template.New("proposal_accepted_html").Parse(tmpl.HTML))
+		t := template.Must(template.New("proposal_started_html").Parse(tmpl.HTML))
 		return t.Execute(w, th)
 	})
 

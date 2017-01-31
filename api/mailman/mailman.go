@@ -64,7 +64,8 @@ func RunProposalLoop() {
 	for {
 		proposals, err := context.LoadAllProposals()
 		if err != nil {
-			log.Println("ERROR: ", err)
+			log.Println("ERROR:", err)
+			time.Sleep(5 * time.Minute)
 			continue
 		}
 
