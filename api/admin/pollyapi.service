@@ -1,0 +1,13 @@
+[Unit]
+Description=pollyapi daemon
+After=network.target
+
+[Service]
+ExecStart=$GOPATH/bin/api
+User=polly
+Group=users
+RestartSec=5
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
