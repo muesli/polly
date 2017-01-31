@@ -67,7 +67,7 @@ func (context *PollyContext) SmallGrantMaxValue(month uint) uint {
 		return 0
 	}
 	if i >= int(context.Config.App.Proposals.SmallGrantValueThreshold) {
-		return context.Config.App.Proposals.SmallGrantValueThreshold
+		return context.Config.App.Proposals.SmallGrantValueThreshold - 1
 	}
 
 	return uint(i)
