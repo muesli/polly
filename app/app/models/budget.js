@@ -3,5 +3,6 @@ import DS from 'ember-data';
 export default DS.Model.extend({
   value: DS.attr('number'),
   maxvalue: DS.attr('number'),
-  period_end: DS.attr('isodate')
+  period_end: DS.attr('isodate'),
+  large_grant_period_end: DS.attr('isodate')
 });
