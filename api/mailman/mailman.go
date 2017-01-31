@@ -67,7 +67,11 @@ func RunLoop() {
 	)
 
 	// Connect to the server
-	c, err = imap.DialTLS(context.Config.Connections.Email.IMAP.Server+":"+strconv.FormatInt(int64(context.Config.Connections.Email.IMAP.Port), 10), nil)
+	if context.Config.Connections.Email.IMAP.Port == 993 {
+		c, err = imap.DialTLS(context.Config.Connections.Email.IMAP.Server+":"+strconv.FormatInt(int64(context.Config.Connections.Email.IMAP.Port), 10), nil)
+	} else {
+		c, err = imap.Dial(context.Config.Connections.Email.IMAP.Server + ":" + strconv.FormatInt(int64(context.Config.Connections.Email.IMAP.Port), 10))
+	}
 	if err != nil || c == nil || c.Data == nil {
 		panic(err)
 	}
