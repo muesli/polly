@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
   responseMessage: "",
   errorMessage: "",
   maxmicrobudget: 0,
+  maxvalue: 0,
 
   title: Ember.computed(function() {
       return this.get('proposal').get('title');
@@ -31,11 +32,12 @@ export default Ember.Controller.extend({
       return this.get('proposal').get('starts');
   }),
 
-  maxBudget: Ember.computed('startdate', 'maxmicrobudget', function() {
+  maxBudget: Ember.computed('startdate', 'maxmicrobudget', 'maxvalue', function() {
       this.store.query('budget', {
           month: moment(this.get('startdate')).add(14, 'd').toDate().getMonth() + 1
       }).then((budget) => {
           this.set('maxmicrobudget', budget.objectAt(0).get('value'));
+          this.set('maxvalue', budget.objectAt(0).get('maxvalue'));
       });
 
       return this.get('maxmicrobudget');
@@ -59,7 +61,8 @@ export default Ember.Controller.extend({
       return title.length > 0 && description.length > 0 &&
              activities.length > 0 && contact.length > 0 &&
              recipient.length > 0 && recipient2.length > 0 &&
-             parseInt(value) > 0 && startdate.getFullYear() > 0;
+             parseInt(value) > 0 && parseInt(value) <= this.maxvalue &&
+             startdate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
