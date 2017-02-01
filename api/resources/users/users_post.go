@@ -14,6 +14,7 @@ import (
 type UserPostStruct struct {
 	User struct {
 		Email string `json:"email"`
+		About string `json:"about"`
 	} `json:"user"`
 }
 
@@ -55,9 +56,14 @@ func (r *UserResource) Post(context smolder.APIContext, request *restful.Request
 		return
 	}
 
+	if ups.User.About == "" {
+		ups.User.About = ups.User.Email
+	}
+
 	user := db.User{
 		Username: ups.User.Email,
 		Email:    ups.User.Email,
+		About:    ups.User.About,
 	}
 	err = user.Save(context.(*db.PollyContext))
 	if err != nil {
