@@ -3,6 +3,7 @@ package proposals
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/muesli/polly/api/db"
 	"github.com/muesli/polly/api/utils"
@@ -71,6 +72,14 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 			"Admin permission required for this operation",
 			"ProposalResource PUT"))
 		return
+	}
+
+	if auth.(db.User).ID != 1 && proposal.Starts.Before(time.Now()) {
+		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
+			http.StatusUnauthorized,
+			false,
+			"Can't update a proposal once it has started",
+			"ProposalResource PUT"))
 	}
 
 	proposal.Title = pps.Proposal.Title
