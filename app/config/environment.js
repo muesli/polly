@@ -27,6 +27,11 @@ module.exports = function(environment) {
         base: {
           authorizer: 'authorizer:custom'
         }
+    },
+
+    moment: {
+        includeTimezone: 'all',
+        includeLocales: true
     }
   };
 
