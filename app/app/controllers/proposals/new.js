@@ -12,6 +12,7 @@ export default Ember.Controller.extend({
   responseMessage: "",
   errorMessage: "",
   startdate: new Date(),
+  finisheddate: new Date(),
   maxmicrobudget: 0,
   maxvalue: 0,
 
@@ -36,12 +37,12 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', function() {
+  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'value', 'startdate', 'finisheddate', function() {
       return this.title.length > 0 && this.description.length > 0 &&
              this.activities.length > 0 && this.contact.length > 0 &&
              this.recipient.length > 0 && (this.value <= this.maxmicrobudget || this.recipient2.length > 0) &&
              parseInt(this.value) > 0 && parseInt(this.value) <= this.maxvalue &&
-             this.startdate.getFullYear() > 0;
+             this.startdate.getFullYear() > 0 && this.finisheddate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
@@ -59,7 +60,8 @@ export default Ember.Controller.extend({
       const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
-      const newProposal = this.store.createRecord('proposal', { title: title, description: description, activities: activities, contact: contact, recipient: recipient, recipient2: recipient2, value: value, starts: startdate });
+      const finisheddate = this.get('finisheddate');
+      const newProposal = this.store.createRecord('proposal', { title: title, description: description, activities: activities, contact: contact, recipient: recipient, recipient2: recipient2, value: value, starts: startdate, finished_date: finisheddate });
       newProposal.save().then(
         (/*proposal*/) => {
           this.set('responseMessage', `Your proposal is now awaiting moderation. Thank you!`);
@@ -72,6 +74,7 @@ export default Ember.Controller.extend({
           this.set('recipient2', '');
           this.set('value', '');
           this.set('startdate', new Date());
+          this.set('finisheddate', new Date());
         },
         error => {
           this.set('errorMessage', `Failed adding your proposal: ` + error);

@@ -31,6 +31,9 @@ export default Ember.Controller.extend({
   startdate: Ember.computed(function() {
       return this.get('proposal').get('starts');
   }),
+  finisheddate: Ember.computed(function() {
+      return this.get('proposal').get('finished_date');
+  }),
 
   isMicroBudget: Ember.computed('value', function() {
       const max = this.get('maxmicrobudget');
@@ -53,7 +56,7 @@ export default Ember.Controller.extend({
       return moment(date).format('YYYY/MM/DD');
   }),
 
-  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'activities', 'value', 'startdate', function() {
+  isValid: Ember.computed('recipient', 'recipient2', 'contact', 'title', 'description', 'activities', 'value', 'startdate', 'finisheddate', function() {
       const title = this.get('title');
       const description = this.get('description');
       const activities = this.get('activities');
@@ -62,12 +65,13 @@ export default Ember.Controller.extend({
       const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
+      const finisheddate = this.get('finisheddate');
 
       return title.length > 0 && description.length > 0 &&
              activities.length > 0 && contact.length > 0 &&
              recipient.length > 0 && (value <= this.maxmicrobudget || recipient2.length > 0) &&
              parseInt(value) > 0 && parseInt(value) <= this.maxvalue &&
-             startdate.getFullYear() > 0;
+             startdate.getFullYear() > 0 && finisheddate.getFullYear() > 0;
   }),
   isDisabled: Ember.computed.not('isValid'),
 
@@ -85,6 +89,7 @@ export default Ember.Controller.extend({
       const recipient2 = this.get('recipient2');
       const value = this.get('value');
       const startdate = this.get('startdate');
+      const finisheddate = this.get('finisheddate');
 
       var proposal = this.get('proposal');
 
@@ -96,6 +101,7 @@ export default Ember.Controller.extend({
       proposal.set('recipient2', recipient2);
       proposal.set('value', value);
       proposal.set('starts', startdate);
+      proposal.set('finished_date', finisheddate);
 
       proposal.save().then(
         (/*proposal*/) => {

@@ -26,6 +26,8 @@
         {{else}}
         {{bootstrap-datepicker id="monthpicker" value=startdate startDate=minimumProposalStartDate format="yyyy/mm" minViewMode=1 autoclose=true class="form-control" placeholder="Which month to run this proposal in"}}
         {{/if}}
+        <br/>
+        {{bootstrap-datepicker id="enddaypicker" value=finisheddate startDate=minimumProposalStartDate format="yyyy/mm/dd" autoclose=true class="form-control" placeholder="When will you finish the proposed activities"}}
       </div>
     </div>
 

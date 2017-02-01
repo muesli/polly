@@ -13,6 +13,7 @@ export default DS.Model.extend({
   granttype: DS.attr('string'),
   starts: DS.attr('isodate'),
   ends: DS.attr('isodate'),
+  finished_date: DS.attr('isodate'),
   ended: DS.attr('boolean'),
   accepted: DS.attr('boolean'),
   moderated: DS.attr('boolean'),
