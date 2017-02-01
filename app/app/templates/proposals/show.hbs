@@ -7,10 +7,10 @@
             Recipient: <strong>{{proposal.recipient}}</strong>
           </div>
           <div class="detail">
-            Starts: <strong>{{moment-from-now proposal.starts}}</strong> ({{formatTime proposal.starts 'D.M.YYYY H:mm z'}})
+            Starts: <strong>{{moment-from-now proposal.starts}}</strong> ({{format_time proposal.starts 'D.M.YYYY H:mm z'}})
           </div>
           <div class="detail">
-            Ends: <strong>{{moment-from-now proposal.ends}}</strong> ({{formatTime proposal.ends 'D.M.YYYY H:mm z'}})
+            Ends: <strong>{{moment-from-now proposal.ends}}</strong> ({{format_time proposal.ends 'D.M.YYYY H:mm z'}})
           </div>
           <div class="detail">
             Value: <strong>{{proposal.value}}</strong> Euros
