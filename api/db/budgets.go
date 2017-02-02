@@ -1,6 +1,9 @@
 package db
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func (context *PollyContext) remainingMonths(month uint) uint {
 	endmonth := context.Config.App.Proposals.StartMonth + context.Config.App.Proposals.TotalRuntimeMonths
@@ -11,6 +14,10 @@ func (context *PollyContext) remainingMonths(month uint) uint {
 	}
 
 	return i
+}
+
+func (context *PollyContext) remainingLargeGrantPeriods(month uint) uint {
+	return uint(math.Ceil(float64(context.remainingMonths(month)) / 2.0))
 }
 
 func (context *PollyContext) sumAcceptedLargeGrants() uint {
@@ -44,7 +51,7 @@ func (context *PollyContext) sumAcceptedSmallGrants(month uint) uint {
 }
 
 func (context *PollyContext) remainingLargeGrantValue(month uint) uint {
-	return context.remainingMonths(month) * context.Config.App.Proposals.MaxGrantValue * (context.Config.App.Proposals.MaxLargeGrantsPerMonth / 2)
+	return context.remainingLargeGrantPeriods(month) * context.Config.App.Proposals.MaxGrantValue * context.Config.App.Proposals.MaxLargeGrantsPerMonth
 }
 
 func (context *PollyContext) remainingSmallGrantValue(month uint) uint {
