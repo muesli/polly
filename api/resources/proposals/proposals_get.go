@@ -139,8 +139,10 @@ func (r *ProposalResource) Get(context smolder.APIContext, request *restful.Requ
 		if authUser.ID != 1 && (!proposal.Moderated || !proposal.Started(ctx)) {
 			add = false
 		}
-		if authUser.ID == int64(uid) && proposal.UserID == int64(uid) {
-			add = true
+		if uid >= 0 && add {
+			if authUser.ID != int64(uid) || proposal.UserID != int64(uid) {
+				add = false
+			}
 		}
 
 		if add {
