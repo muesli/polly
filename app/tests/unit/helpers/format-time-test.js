@@ -6,7 +6,7 @@ module('Unit | Helper | format time');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  let result = formatTime([42]);
+  let result = format_time([42]);
   assert.ok(result);
 });
 
