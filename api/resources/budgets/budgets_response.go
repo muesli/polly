@@ -15,6 +15,7 @@ type BudgetResponse struct {
 
 type budgetInfoResponse struct {
 	ID                  uint      `json:"id"`
+	AvailableSmall      uint      `json:"available_small"`
 	Value               uint      `json:"value"`
 	MaxValue            uint      `json:"maxvalue"`
 	PeriodEnd           time.Time `json:"period_end"`
@@ -41,10 +42,11 @@ func (r *BudgetResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareBudgetResponse(context smolder.APIContext, month uint, budget, maxBudget uint, periodEnd, largeGrantPeriodEnd time.Time) budgetInfoResponse {
+func prepareBudgetResponse(context smolder.APIContext, month uint, availableSmall, budget, maxBudget uint, periodEnd, largeGrantPeriodEnd time.Time) budgetInfoResponse {
 	//	ctx := context.(*db.PollyContext)
 	resp := budgetInfoResponse{
 		ID:                  month,
+		AvailableSmall:      availableSmall,
 		Value:               budget,
 		MaxValue:            maxBudget,
 		PeriodEnd:           periodEnd,

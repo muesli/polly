@@ -51,6 +51,11 @@ func (context *PollyContext) remainingSmallGrantValue(month uint) uint {
 	return context.Config.App.Proposals.TotalGrantValue - context.remainingLargeGrantValue(month) - context.sumAcceptedLargeGrants() - context.sumAcceptedSmallGrants(0)
 }
 
+// RemainingSmallGrantThisMonth returns the total available budget for small grants this month
+func (context *PollyContext) RemainingSmallGrantThisMonth(month uint) uint {
+	return context.remainingSmallGrantValue(month) / context.remainingMonths(month)
+}
+
 // SmallGrantMaxValue returns the max available value for a micro budget
 func (context *PollyContext) SmallGrantMaxValue(month uint) uint {
 	/* fmt.Println("remaining months:", context.remainingMonths(month))

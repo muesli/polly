@@ -59,6 +59,7 @@ func (r *BudgetResource) Get(context smolder.APIContext, request *restful.Reques
 	largeGrantPeriodEnd = time.Date(largeGrantPeriodEnd.Year(), largeGrantPeriodEnd.Month(), largeGrantPeriodEnd.Day(), 12, 0, 0, 0, time.UTC)
 
 	resp.Budgets = append(resp.Budgets, prepareBudgetResponse(context, uint(month),
+		ctx.RemainingSmallGrantThisMonth(uint(month)),
 		ctx.SmallGrantMaxValue(uint(month)), ctx.GrantMaxValue(),
 		periodEnd, largeGrantPeriodEnd))
 
