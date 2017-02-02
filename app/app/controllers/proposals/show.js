@@ -5,6 +5,10 @@ const { inject: { service } } = Ember;
 export default Ember.Controller.extend({
   currentUser: service('current-user'),
 
+  proposal_has_started: Ember.computed('proposal.starts', function() {
+      return this.get('proposal').get('starts') <= new Date();
+  }),
+
   currentUserVoted: Ember.computed('vote.@each.moderated', function() {
       const proposalID = this.get('proposal').get('id');
       var found = false;
