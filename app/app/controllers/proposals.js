@@ -2,7 +2,7 @@ import Ember from 'ember';
 import moment from 'moment';
 
 export default Ember.Controller.extend({
-    maxmicrobudget: 0,
+    avail_micro_budget: 0,
     periodend: "",
     largegrantperiodend: "",
 
@@ -14,15 +14,15 @@ export default Ember.Controller.extend({
         return this.largegrantperiodend;
     }),
 
-    maxBudget: Ember.computed('maxmicrobudget', function() {
+    availMicroBudget: Ember.computed('avail_micro_budget', function() {
         this.store.query('budget', {
             month: moment().add(14, 'd').toDate().getMonth() + 1
         }).then((budget) => {
-            this.set('maxmicrobudget', budget.objectAt(0).get('value'));
+            this.set('avail_micro_budget', budget.objectAt(0).get('available_small'));
             this.set('periodend', budget.objectAt(0).get('period_end'));
             this.set('largegrantperiodend', budget.objectAt(0).get('large_grant_period_end'));
         });
 
-        return this.get('maxmicrobudget');
+        return this.get('avail_micro_budget');
     })
 });
