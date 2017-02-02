@@ -1,5 +1,5 @@
 
-import { formatTime } from 'polly/helpers/format-time';
+import { format_time } from 'polly/helpers/format-time';
 import { module, test } from 'qunit';
 
 module('Unit | Helper | format time');
