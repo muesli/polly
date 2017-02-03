@@ -21,21 +21,21 @@ func (r *VoteResource) GetDoc() string {
 func (r *VoteResource) GetParams() []*restful.Parameter {
 	params := []*restful.Parameter{}
 	// params = append(params, restful.QueryParameter("user_id", "id of a user").DataType("int64"))
-	params = append(params, restful.QueryParameter("granttype", "small or large").DataType("string"))
-	params = append(params, restful.QueryParameter("ended", "only returns finished votes").DataType("bool"))
+	// params = append(params, restful.QueryParameter("granttype", "small or large").DataType("string"))
+	// params = append(params, restful.QueryParameter("ended", "only returns finished votes").DataType("bool"))
 
 	return params
 }
 
 // Get sends out items matching the query parameters
 func (r *VoteResource) Get(context smolder.APIContext, request *restful.Request, response *restful.Response, params map[string][]string) {
-	/*	authUser := db.User{}
-		if auth, err := context.Authentication(request); err == nil {
-			authUser = auth.(db.User)
-		}*/
+	authUser := db.User{}
+	if auth, err := context.Authentication(request); err == nil {
+		authUser = auth.(db.User)
+	}
 
 	ctx := context.(*db.PollyContext)
-	votes, err := ctx.LoadAllUserVotes()
+	votes, err := ctx.LoadAllUserVotes(authUser.ID)
 	if err != nil {
 		r.NotFound(request, response)
 		return
@@ -45,7 +45,7 @@ func (r *VoteResource) Get(context smolder.APIContext, request *restful.Request,
 	resp.Init(context)
 
 	for _, vote := range votes {
-		resp.AddVote(&vote)
+		resp.AddVote(vote)
 	}
 
 	resp.Send(response)

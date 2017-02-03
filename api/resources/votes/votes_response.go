@@ -30,8 +30,8 @@ func (r *VoteResponse) Init(context smolder.APIContext) {
 }
 
 // AddVote adds a vote to the response
-func (r *VoteResponse) AddVote(vote *db.Vote) {
-	r.votes = append(r.votes, *vote)
+func (r *VoteResponse) AddVote(vote db.Vote) {
+	r.votes = append(r.votes, vote)
 	r.Votes = append(r.Votes, prepareVoteResponse(r.Context, vote))
 }
 
@@ -47,7 +47,7 @@ func (r *VoteResponse) EmptyResponse() interface{} {
 	return nil
 }
 
-func prepareVoteResponse(context smolder.APIContext, vote *db.Vote) voteInfoResponse {
+func prepareVoteResponse(context smolder.APIContext, vote db.Vote) voteInfoResponse {
 	resp := voteInfoResponse{
 		ID:       vote.ID,
 		User:     vote.UserID,

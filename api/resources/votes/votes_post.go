@@ -83,6 +83,6 @@ func (r *VoteResource) Post(context smolder.APIContext, request *restful.Request
 			"VoteResource POST"))
 	}
 
-	resp.AddVote(&vote)
+	resp.AddVote(vote)
 	resp.Send(response)
 }

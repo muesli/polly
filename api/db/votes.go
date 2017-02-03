@@ -9,10 +9,10 @@ type Vote struct {
 }
 
 // LoadAllUserVotes loads all votes for a user from the database
-func (context *PollyContext) LoadAllUserVotes() ([]Vote, error) {
+func (context *PollyContext) LoadAllUserVotes(userID int64) ([]Vote, error) {
 	votes := []Vote{}
 
-	rows, err := context.Query("SELECT id, userid, proposalid, vote FROM votes")
+	rows, err := context.Query("SELECT id, userid, proposalid, vote FROM votes WHERE userid = $1", userID)
 	if err != nil {
 		return votes, err
 	}
