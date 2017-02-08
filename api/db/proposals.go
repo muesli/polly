@@ -88,12 +88,20 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 
 	if proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
 		if proposal.Value > uint64(context.SmallGrantMaxValue(uint(proposal.Ends(context).Month()))) {
-			return errors.New("Proposal value is too high")
+			return errors.New("Proposal value is too high for this polling period")
 		}
-	}
 
-	if proposal.Starts.Before(time.Now()) {
-		return errors.New("Invalid start date")
+		if proposal.Starts.Before(time.Now()) {
+			return errors.New("Invalid start date")
+		}
+	} else {
+		largeGrantStartMonth := ((int(proposal.Starts.Month()) + int(context.Config.App.Proposals.StartMonth)) % int(context.Config.App.Proposals.GrantIntervalMonths)) + int(proposal.Starts.Month())
+		startDate := time.Date(proposal.Starts.Year(), time.Month(largeGrantStartMonth), 1, 0, 0, 0, 0, time.UTC).AddDate(0, 1, -1)
+		proposal.Starts = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 12, 0, 0, 0, time.UTC)
+
+		if proposal.Starts.Before(time.Now()) {
+			return errors.New("Invalid start date")
+		}
 	}
 
 	err := context.QueryRow("INSERT INTO proposals (userid, title, description, activities, contact, recipient, recipient2, value, starts, finisheddate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.FinishedDate).Scan(&proposal.ID)
