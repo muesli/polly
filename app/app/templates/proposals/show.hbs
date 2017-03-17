@@ -1,27 +1,26 @@
 <div class="jumbo show-listing">
   <div class="row">
     <div class="col-xs-9 col-xs-offset-0 col-sm-9 col-sm-offset-0 col-md-9 col-md-offset-0">
-        <h3 class="title">Title: <strong>{{proposal.title}}</strong></h3>
-        <div class="left">
-          <div class="detail">
-            Recipient: <strong>{{proposal.recipient}}</strong>
-          </div>
-          <div class="detail">
-            Starts: <strong>{{moment-from-now proposal.starts}}</strong> ({{format_time proposal.starts 'D.M.YYYY H:mm z'}})
-          </div>
-          <div class="detail">
-            Ends: <strong>{{moment-from-now proposal.ends}}</strong> ({{format_time proposal.ends 'D.M.YYYY H:mm z'}})
-          </div>
-          <div class="detail">
-            Value: <strong>{{proposal.value}}</strong> Euros
-          </div>
+      <h3 class="title">Title: <strong>{{proposal.title}}</strong></h3>
+      <div class="left">
+        <div class="detail">
+          Recipient: <strong>{{proposal.recipient}}</strong>
         </div>
+        <div class="detail">
+          Starts: <strong>{{moment-from-now proposal.starts}}</strong> ({{format_time proposal.starts 'D.M.YYYY H:mm z'}})
+        </div>
+        <div class="detail">
+          Ends: <strong>{{moment-from-now proposal.ends}}</strong> ({{format_time proposal.ends 'D.M.YYYY H:mm z'}})
+        </div>
+        <div class="detail">
+          Value: <strong>{{proposal.value}}</strong> Euros
+        </div>
+      </div>
     </div>
 
     <div class="col-xs-2 col-xs-offset-1 col-sm-2 col-sm-offset-1 col-md-1 col-md-offset-2 align-middle text-center">
       <br/>
-      <h2><b>{{proposal.votes}}</b></h2>
-      Votes
+      <h2><b>{{proposal.votes}}</b></h2> Votes
     </div>
   </div>
 
@@ -37,21 +36,30 @@
         <button {{action 'moderate' proposal.id}} class="btn btn-primary btn-lg btn-block">Allow proposal</button>
       {{/if}}
     {{else}}
-        {{#if (eq proposal.ended false)}}
-            {{#if (eq currentUser.user.id proposal.user.id)}}
-                {{#if (eq proposal_has_started false)}}
-                    {{#link-to "proposals.edit" proposal.id tagName="button" class="btn btn-primary btn-lg btn-block"}}Edit proposal{{/link-to}}
-                {{/if}}
-            {{else}}
-                {{#if (eq currentUserVoted true)}}
-                    You've voted against this proposal!
-                {{else}}
-                    <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
-                {{/if}}
-            {{/if}}
+      {{#if (eq proposal.ended false)}}
+        {{#if (eq currentUser.user.id proposal.user.id)}}
+          {{#if (eq proposal_has_started false)}}
+            {{#link-to "proposals.edit" proposal.id tagName="button" class="btn btn-primary btn-lg btn-block" }}Edit proposal{{/link-to}}
+          {{/if}}
         {{else}}
-            This proposal has {{#if (eq proposal.accepted false)}}<b>not</b> {{/if}} been accepted!
+          {{#if (eq currentUserVoted true)}}
+            {{#if (eq proposal.granttype "large")}}
+              You've voted for this proposal!
+            {{else}}
+              You've voted against this proposal!
+            {{/if}}
+          {{else}}
+            {{#if (eq proposal.granttype "large")}}
+              <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote for this proposal</button>
+            {{else}}
+              <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
+            {{/if}}
+          {{/if}}
         {{/if}}
+      {{else}}
+        This proposal has
+        {{#if (eq proposal.accepted false)}}<b>not</b> {{/if}} been accepted!
+      {{/if}}
     {{/if}}
   </div>
 </div>
