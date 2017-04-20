@@ -22,7 +22,7 @@
               {{#link-to 'admin' tagName="li"}}<a href="">Admin</a>{{/link-to}}
             {{/if}}
             {{#if session.isAuthenticated}}
-              <li><a href="" {{action 'invalidateSession'}}>Logout
+              <li><a href="#" {{action 'invalidateSession'}}>Logout
                   {{#if currentUser.user}}
                     ({{currentUser.user.email}})
                   {{/if}}
