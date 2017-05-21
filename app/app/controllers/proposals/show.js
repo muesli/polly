@@ -9,7 +9,7 @@ export default Ember.Controller.extend({
       return this.get('proposal').get('starts') <= new Date();
   }),
 
-  currentUserVoted: Ember.computed('vote.@each.moderated', function() {
+  currentUserVoted: Ember.computed('vote.@each.voted', 'proposal', function() {
       const proposalID = this.get('proposal').get('id');
       var found = false;
 
