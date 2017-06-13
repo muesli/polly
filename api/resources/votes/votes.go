@@ -27,3 +27,13 @@ func (r *VoteResource) Register(container *restful.Container, config smolder.API
 
 	r.Init(container, r)
 }
+
+// Reads returns the model that will be read by POST, PUT & PATCH operations
+func (r *VoteResource) Reads() interface{} {
+	return VotePostStruct{}
+}
+
+// Returns returns the model that will be returned
+func (r *VoteResource) Returns() interface{} {
+	return VoteResponse{}
+}

@@ -147,3 +147,13 @@ func (r *SessionResource) Post(context smolder.APIContext, request *restful.Requ
 	resp.UserID = user.ID
 	response.WriteHeaderAndEntity(http.StatusOK, resp)
 }
+
+// Reads returns the model that will be read by POST, PUT & PATCH operations
+func (r *SessionResource) Reads() interface{} {
+	return SessionPostStruct{}
+}
+
+// Returns returns the model that will be returned
+func (r *SessionResource) Returns() interface{} {
+	return SessionResponse{}
+}

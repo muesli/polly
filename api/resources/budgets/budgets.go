@@ -26,3 +26,8 @@ func (r *BudgetResource) Register(container *restful.Container, config smolder.A
 
 	r.Init(container, r)
 }
+
+// Returns returns the model that will be returned
+func (r *BudgetResource) Returns() interface{} {
+	return BudgetResponse{}
+}

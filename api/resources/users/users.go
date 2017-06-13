@@ -28,3 +28,13 @@ func (r *UserResource) Register(container *restful.Container, config smolder.API
 
 	r.Init(container, r)
 }
+
+// Reads returns the model that will be read by POST, PUT & PATCH operations
+func (r *UserResource) Reads() interface{} {
+	return UserPostStruct{}
+}
+
+// Returns returns the model that will be returned
+func (r *UserResource) Returns() interface{} {
+	return UserResponse{}
+}

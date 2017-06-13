@@ -29,3 +29,13 @@ func (r *ProposalResource) Register(container *restful.Container, config smolder
 
 	r.Init(container, r)
 }
+
+// Reads returns the model that will be read by POST, PUT & PATCH operations
+func (r *ProposalResource) Reads() interface{} {
+	return ProposalPostStruct{}
+}
+
+// Returns returns the model that will be returned
+func (r *ProposalResource) Returns() interface{} {
+	return ProposalResponse{}
+}
