@@ -119,11 +119,9 @@ func (proposal *Proposal) Ends(context *PollyContext) time.Time {
 	return proposal.Starts.AddDate(0, 0, int(context.Config.App.Proposals.SmallGrantVoteRuntimeDays))
 }
 
-// Ended returns true if a proposal either ended or got rejected by votes
+// Ended returns true if a proposal ended
 func (proposal *Proposal) Ended(context *PollyContext) bool {
-	return proposal.Ends(context).Before(time.Now()) ||
-		(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
-			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold))
+	return proposal.Ends(context).Before(time.Now())
 }
 
 // Accepted returns true if a proposal has finished and was accepted by poll
