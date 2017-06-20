@@ -21,7 +21,24 @@ func (context *PollyContext) remainingLargeGrantPeriods(month uint) uint {
 }
 
 func (context *PollyContext) sumAcceptedLargeGrants() uint {
-	return 0
+	proposals, _ := context.LoadAllProposals()
+
+	i := uint(0)
+	for _, p := range proposals {
+		if !p.Ended(context) {
+			continue
+		}
+		if p.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
+			continue
+		}
+		if !p.Accepted(context) {
+			continue
+		}
+
+		i += uint(p.Value)
+	}
+
+	return i
 }
 
 func (context *PollyContext) sumAcceptedSmallGrants(month uint) uint {
