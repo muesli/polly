@@ -42,8 +42,8 @@
             {{#link-to "proposals.edit" proposal.id tagName="button" class="btn btn-primary btn-lg btn-block" }}Edit proposal{{/link-to}}
           {{/if}}
         {{else}}
-          {{#if (eq currentUserVoted true)}}
-            {{#if (eq proposal.granttype "large")}}
+          {{#if (not-eq currentUserVoted 0)}}
+            {{#if (eq currentUserVoted 1)}}
               You've voted for this proposal!
             {{else}}
               You've voted against this proposal!
@@ -52,7 +52,8 @@
             {{#if (eq proposal.granttype "large")}}
               <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote for this proposal</button>
             {{else}}
-              <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
+              <button {{action 'vote'}} class="btn btn-primary btn-lg btn-block">Vote for this proposal</button>
+              <button {{action 'voteDown'}} class="btn btn-primary btn-lg btn-block">Vote against this proposal</button>
             {{/if}}
           {{/if}}
         {{/if}}

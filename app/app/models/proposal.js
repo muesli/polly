@@ -17,5 +17,6 @@ export default DS.Model.extend({
   ended: DS.attr('boolean'),
   accepted: DS.attr('boolean'),
   moderated: DS.attr('boolean'),
-  votes: DS.attr('number')
+  votes: DS.attr('number'),
+  vetos: DS.attr('number')
 });

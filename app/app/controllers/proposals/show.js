@@ -12,14 +12,20 @@ export default Ember.Controller.extend({
   currentUserVoted: Ember.computed('vote.@each.voted', 'proposal', function() {
       const proposalID = this.get('proposal').get('id');
       var found = false;
+      var val = 0;
 
       this.get('vote').forEach(function(entry) {
           if (entry.get('proposal').get('id') === proposalID) {
               found = true;
+              if (entry.get('voted')) {
+                  val = 1;
+              } else {
+                  val = -1;
+              }
               return;
           }
       });
-      return found;
+      return val;
   }),
 
   actions: {
@@ -32,6 +38,18 @@ export default Ember.Controller.extend({
     vote() {
         const proposalID = this.get('proposal').get('id');
         const newVote = this.store.createRecord('vote', { proposal: this.get('proposal'), voted: true });
+        newVote.save().then(
+          (/*vote*/) => {
+              this.store.findRecord('proposal', proposalID, {reload: true});
+          },
+          error => {
+            alert(error);
+          }
+        );
+    },
+    voteDown() {
+        const proposalID = this.get('proposal').get('id');
+        const newVote = this.store.createRecord('vote', { proposal: this.get('proposal'), voted: false });
         newVote.save().then(
           (/*vote*/) => {
               this.store.findRecord('proposal', proposalID, {reload: true});
