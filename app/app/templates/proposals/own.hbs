@@ -12,6 +12,7 @@
             <th>Moderated</th>
         {{/if}}
 	    <th class="text-right">Votes</th>
+        <th class="text-right">Vetos</th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
             {{/if}}
         {{/if}}
         <td class="text-right">{{proposal.votes}}</td>
+        <td class="text-right">{{proposal.vetos}}</td>
       </tr>
     {{/each}}
     </tbody>
