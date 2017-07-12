@@ -59,8 +59,8 @@
             "MaxGrantValue":                5000,
             "MaxLargeGrantsPerMonth":       2,
             "SmallGrantValueThreshold":     2000,
-            "SmallGrantVetoThreshold":      3,
-            "SmallGrantVoteThreshold":      5,
+            "SmallGrantVetoThreshold":      5,
+            "SmallGrantVoteThreshold":      3,
             "SmallGrantVoteRuntimeDays":    14
         },
 
