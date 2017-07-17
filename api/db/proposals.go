@@ -19,6 +19,7 @@ type Proposal struct {
 	Starts       time.Time
 	FinishedDate time.Time
 	Votes        uint64
+	Vetos        uint64
 	Moderated    bool
 	StartTrigger bool
 }
@@ -30,7 +31,8 @@ func (context *PollyContext) LoadProposalByID(id int64) (Proposal, error) {
 		return proposal, ErrInvalidID
 	}
 
-	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated, started, finisheddate FROM proposals WHERE id = $1", id).Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
+	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, vetos, moderated, started, finisheddate FROM proposals WHERE id = $1", id).
+		Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
 	return proposal, err
 }
 
@@ -50,7 +52,7 @@ func (context *PollyContext) GetProposalByID(id int64) (Proposal, error) {
 func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	proposals := []Proposal{}
 
-	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, moderated, started, finisheddate FROM proposals ORDER BY starts ASC")
+	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, vetos, moderated, started, finisheddate FROM proposals ORDER BY starts ASC")
 	if err != nil {
 		return proposals, err
 	}
@@ -58,7 +60,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	defer rows.Close()
 	for rows.Next() {
 		proposal := Proposal{}
-		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
+		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
 		if err != nil {
 			return proposals, err
 		}
@@ -124,27 +126,59 @@ func (proposal *Proposal) Ended(context *PollyContext) bool {
 	return proposal.Ends(context).Before(time.Now())
 }
 
+func (proposal *Proposal) IsTopTwo(context *PollyContext) bool {
+	rows, err := context.Query("SELECT id FROM proposals WHERE starts = $1 ORDER BY votes DESC LIMIT 2", proposal.Starts)
+	if err != nil {
+		return false
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		p := Proposal{}
+		err = rows.Scan(&p.ID)
+		if err != nil {
+			return false
+		}
+
+		if proposal.ID == p.ID {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Accepted returns true if a proposal has finished and was accepted by poll
 func (proposal *Proposal) Accepted(context *PollyContext) bool {
-	return proposal.Ended(context) &&
-		(proposal.Value >= uint64(context.Config.App.Proposals.SmallGrantValueThreshold) ||
-			(proposal.Value < uint64(context.Config.App.Proposals.SmallGrantValueThreshold) &&
-				proposal.Votes < uint64(context.Config.App.Proposals.SmallGrantVoteThreshold)))
+	if !proposal.Ended(context) {
+		return false
+	}
+
+	if proposal.Value >= uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
+		return true
+	} else {
+		return proposal.Vetos < uint64(context.Config.App.Proposals.SmallGrantVetoThreshold) &&
+			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold)
+	}
 }
 
 // Vote marks a vote for a proposal
-func (proposal *Proposal) Vote(context *PollyContext, user User) (Vote, error) {
+func (proposal *Proposal) Vote(context *PollyContext, user User, up bool) (Vote, error) {
 	vote := Vote{
 		UserID:     user.ID,
 		ProposalID: proposal.ID,
-		Vote:       true,
+		Vote:       up,
 	}
 	err := vote.Save(context)
 	if err != nil {
 		return Vote{}, err
 	}
 
-	err = context.QueryRow("UPDATE proposals SET votes=votes+1 WHERE id = $1 RETURNING votes", proposal.ID).Scan(&proposal.Votes)
+	if up {
+		err = context.QueryRow("UPDATE proposals SET votes=votes+1 WHERE id = $1 RETURNING votes", proposal.ID).Scan(&proposal.Votes)
+	} else {
+		err = context.QueryRow("UPDATE proposals SET vetos=vetos+1 WHERE id = $1 RETURNING vetos", proposal.ID).Scan(&proposal.Vetos)
+	}
 	proposalsCache.Delete(proposal.ID)
 	return vote, err
 }

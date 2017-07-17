@@ -67,6 +67,7 @@ func GetDatabase() *sql.DB {
 				  starts		timestamp	NOT NULL,
 				  finisheddate	timestamp	NOT NULL,
 				  votes	      	int       	DEFAULT 0,
+				  vetos			int			DEFAULT 0,
 				  moderated     bool        DEFAULT false,
 				  started		bool        DEFAULT false,
 				  CONSTRAINT  	fk_user		FOREIGN KEY (userid) REFERENCES users (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE

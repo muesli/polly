@@ -74,7 +74,7 @@ func (r *VoteResource) Post(context smolder.APIContext, request *restful.Request
 			"VoteResource POST"))
 	}
 
-	vote, err := proposal.Vote(ctx, authUser)
+	vote, err := proposal.Vote(ctx, authUser, pps.Vote.Voted)
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,

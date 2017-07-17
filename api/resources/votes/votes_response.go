@@ -52,7 +52,7 @@ func prepareVoteResponse(context smolder.APIContext, vote db.Vote) voteInfoRespo
 		ID:       vote.ID,
 		User:     vote.UserID,
 		Proposal: vote.ProposalID,
-		Voted:    true,
+		Voted:    vote.Vote,
 	}
 
 	return resp

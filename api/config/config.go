@@ -46,6 +46,7 @@ type Data struct {
 			MaxGrantValue             uint
 			MaxLargeGrantsPerMonth    uint
 			SmallGrantValueThreshold  uint
+			SmallGrantVetoThreshold   uint
 			SmallGrantVoteThreshold   uint
 			SmallGrantVoteRuntimeDays uint
 		}
