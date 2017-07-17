@@ -155,7 +155,7 @@ func (proposal *Proposal) Accepted(context *PollyContext) bool {
 	}
 
 	if proposal.Value >= uint64(context.Config.App.Proposals.SmallGrantValueThreshold) {
-		return true
+		return proposal.IsTopTwo(context)
 	} else {
 		return proposal.Vetos < uint64(context.Config.App.Proposals.SmallGrantVetoThreshold) &&
 			proposal.Votes >= uint64(context.Config.App.Proposals.SmallGrantVoteThreshold)
