@@ -1,37 +1,44 @@
 import Ember from 'ember';
 import moment from 'moment';
 
+const { inject: { service } } = Ember;
+
 export default Ember.Controller.extend({
+  currentUser: service('current-user'),
+
   responseMessage: "",
   errorMessage: "",
   maxmicrobudget: 0,
   maxvalue: 0,
 
-  title: Ember.computed(function() {
+  title: Ember.computed('proposal', function() {
       return this.get('proposal').get('title');
   }),
-  description: Ember.computed(function() {
+  description: Ember.computed('proposal', function() {
       return this.get('proposal').get('description');
   }),
-  activities: Ember.computed(function() {
+  activities: Ember.computed('proposal', function() {
       return this.get('proposal').get('activities');
   }),
-  contact: Ember.computed(function() {
+  contact: Ember.computed('proposal', function() {
       return this.get('proposal').get('contact');
   }),
-  recipient: Ember.computed(function() {
+  recipient: Ember.computed('proposal', function() {
       return this.get('proposal').get('recipient');
   }),
-  recipient2: Ember.computed(function() {
+  recipient2: Ember.computed('proposal', function() {
       return this.get('proposal').get('recipient2');
   }),
-  value: Ember.computed(function() {
+  value: Ember.computed('proposal', function() {
       return this.get('proposal').get('value');
   }),
-  startdate: Ember.computed(function() {
+  realvalue: Ember.computed('proposal', function() {
+      return this.get('proposal').get('realvalue');
+  }),
+  startdate: Ember.computed('proposal', function() {
       return this.get('proposal').get('starts');
   }),
-  finisheddate: Ember.computed(function() {
+  finisheddate: Ember.computed('proposal', function() {
       return this.get('proposal').get('finished_date');
   }),
 
@@ -88,6 +95,7 @@ export default Ember.Controller.extend({
       const recipient = this.get('recipient');
       const recipient2 = this.get('recipient2');
       const value = this.get('value');
+      const realvalue = this.get('realvalue');
       const startdate = this.get('startdate');
       const finisheddate = this.get('finisheddate');
 
@@ -100,6 +108,7 @@ export default Ember.Controller.extend({
       proposal.set('recipient', recipient);
       proposal.set('recipient2', recipient2);
       proposal.set('value', value);
+      proposal.set('realvalue', realvalue);
       proposal.set('starts', startdate);
       proposal.set('finished_date', finisheddate);
 
