@@ -35,7 +35,7 @@ func (context *PollyContext) sumAcceptedLargeGrants() uint {
 			continue
 		}
 
-		i += uint(p.Value)
+		i += uint(p.RealValue)
 	}
 
 	return i
@@ -61,7 +61,7 @@ func (context *PollyContext) sumAcceptedSmallGrants(month uint) uint {
 		}
 		fmt.Println("ACCEPTING:", p.Title, p.Starts, p.Value, p.Votes)
 
-		i += uint(p.Value)
+		i += uint(p.RealValue)
 	}
 
 	return i

@@ -21,6 +21,7 @@ type ProposalPostStruct struct {
 		Recipient    string    `json:"recipient"`
 		Recipient2   string    `json:"recipient2"`
 		Value        uint64    `json:"value"`
+		RealValue    uint64    `json:"realvalue"`
 		Moderated    bool      `json:"moderated"`
 		Starts       time.Time `json:"starts"`
 		FinishedDate time.Time `json:"finished_date"`

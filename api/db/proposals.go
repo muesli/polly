@@ -16,6 +16,7 @@ type Proposal struct {
 	Recipient    string
 	Recipient2   string
 	Value        uint64
+	RealValue    uint64
 	Starts       time.Time
 	FinishedDate time.Time
 	Votes        uint64
@@ -31,8 +32,8 @@ func (context *PollyContext) LoadProposalByID(id int64) (Proposal, error) {
 		return proposal, ErrInvalidID
 	}
 
-	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, vetos, moderated, started, finisheddate FROM proposals WHERE id = $1", id).
-		Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
+	err := context.QueryRow("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, realvalue, starts, votes, vetos, moderated, started, finisheddate FROM proposals WHERE id = $1", id).
+		Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.RealValue, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
 	return proposal, err
 }
 
@@ -52,7 +53,7 @@ func (context *PollyContext) GetProposalByID(id int64) (Proposal, error) {
 func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	proposals := []Proposal{}
 
-	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, starts, votes, vetos, moderated, started, finisheddate FROM proposals ORDER BY starts ASC")
+	rows, err := context.Query("SELECT id, userid, title, description, activities, contact, recipient, recipient2, value, realvalue, starts, votes, vetos, moderated, started, finisheddate FROM proposals ORDER BY starts ASC")
 	if err != nil {
 		return proposals, err
 	}
@@ -60,7 +61,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 	defer rows.Close()
 	for rows.Next() {
 		proposal := Proposal{}
-		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
+		err = rows.Scan(&proposal.ID, &proposal.UserID, &proposal.Title, &proposal.Description, &proposal.Activities, &proposal.Contact, &proposal.Recipient, &proposal.Recipient2, &proposal.Value, &proposal.RealValue, &proposal.Starts, &proposal.Votes, &proposal.Vetos, &proposal.Moderated, &proposal.StartTrigger, &proposal.FinishedDate)
 		if err != nil {
 			return proposals, err
 		}
@@ -73,7 +74,7 @@ func (context *PollyContext) LoadAllProposals() ([]Proposal, error) {
 
 // Update a proposal in the database
 func (proposal *Proposal) Update(context *PollyContext) error {
-	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, activities = $3, contact = $4, recipient = $5, recipient2 = $6, value = $7, starts = $8, moderated = $9, started = $10, finisheddate = $11 WHERE id = $12", proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.Moderated, proposal.StartTrigger, proposal.FinishedDate, proposal.ID)
+	_, err := context.Exec("UPDATE proposals SET title = $1, description = $2, activities = $3, contact = $4, recipient = $5, recipient2 = $6, value = $7, realvalue = $8, starts = $9, moderated = $10, started = $11, finisheddate = $12 WHERE id = $13", proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.RealValue, proposal.Starts, proposal.Moderated, proposal.StartTrigger, proposal.FinishedDate, proposal.ID)
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +107,7 @@ func (proposal *Proposal) Save(context *PollyContext) error {
 		}
 	}
 
-	err := context.QueryRow("INSERT INTO proposals (userid, title, description, activities, contact, recipient, recipient2, value, starts, finisheddate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Starts, proposal.FinishedDate).Scan(&proposal.ID)
+	err := context.QueryRow("INSERT INTO proposals (userid, title, description, activities, contact, recipient, recipient2, value, realvalue, starts, finisheddate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id", proposal.UserID, proposal.Title, proposal.Description, proposal.Activities, proposal.Contact, proposal.Recipient, proposal.Recipient2, proposal.Value, proposal.Value, proposal.Starts, proposal.FinishedDate).Scan(&proposal.ID)
 	proposalsCache.Delete(proposal.ID)
 	return err
 }

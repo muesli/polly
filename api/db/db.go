@@ -64,6 +64,7 @@ func GetDatabase() *sql.DB {
 				  recipient		text		NOT NULL,
 				  recipient2	text,
 				  value			int			NOT NULL,
+				  realvalue		int			NOT NULL,
 				  starts		timestamp	NOT NULL,
 				  finisheddate	timestamp	NOT NULL,
 				  votes	      	int       	DEFAULT 0,

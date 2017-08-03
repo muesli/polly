@@ -27,6 +27,7 @@ type proposalInfoResponse struct {
 	Recipient    string    `json:"recipient"`
 	Recipient2   string    `json:"recipient2"`
 	Value        uint64    `json:"value"`
+	RealValue    uint64    `json:"realvalue"`
 	GrantType    string    `json:"granttype"`
 	URL          string    `json:"url"`
 	Starts       time.Time `json:"starts"`
@@ -77,6 +78,7 @@ func prepareProposalResponse(context smolder.APIContext, proposal *db.Proposal) 
 		Recipient:    proposal.Recipient,
 		Recipient2:   proposal.Recipient2,
 		Value:        proposal.Value,
+		RealValue:    proposal.RealValue,
 		Starts:       proposal.Starts,
 		Ends:         proposal.Ends(ctx),
 		FinishedDate: proposal.FinishedDate,

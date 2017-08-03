@@ -89,8 +89,9 @@ func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Requ
 	proposal.Recipient = pps.Proposal.Recipient
 	proposal.Recipient2 = pps.Proposal.Recipient2
 	proposal.Value = pps.Proposal.Value
-	proposal.Starts = pps.Proposal.Starts
-	proposal.FinishedDate = pps.Proposal.FinishedDate
+	proposal.RealValue = pps.Proposal.RealValue
+	// proposal.Starts = pps.Proposal.Starts
+	// proposal.FinishedDate = pps.Proposal.FinishedDate
 
 	if auth.(db.User).ID == 1 {
 		if !proposal.Moderated && pps.Proposal.Moderated {
