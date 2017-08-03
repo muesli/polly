@@ -10,6 +10,7 @@ export default DS.Model.extend({
   recipient: DS.attr('string'),
   recipient2: DS.attr('string'),
   value: DS.attr('number'),
+  realvalue: DS.attr('number'),
   granttype: DS.attr('string'),
   starts: DS.attr('isodate'),
   ends: DS.attr('isodate'),
