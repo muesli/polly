@@ -8,7 +8,7 @@ import (
 	restful "github.com/emicklei/go-restful"
 	"github.com/muesli/polly/api/config"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/muesli/smolder"
 )
 

@@ -17,7 +17,7 @@ import (
 	"github.com/muesli/polly/api/resources/users"
 	"github.com/muesli/polly/api/resources/votes"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/emicklei/go-restful-swagger12"
 	"github.com/muesli/smolder"
 )
