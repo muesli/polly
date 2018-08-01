@@ -34,7 +34,7 @@ func (r *VoteResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *VoteResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+func (r *VoteResource) Post(context smolder.APIContext, data interface{}, request *restful.Request, response *restful.Response) {
 	ctx := context.(*db.PollyContext)
 	authUser := db.User{}
 	if auth, err := context.Authentication(request); err == nil {

@@ -38,3 +38,7 @@ func (r *UserResource) Reads() interface{} {
 func (r *UserResource) Returns() interface{} {
 	return UserResponse{}
 }
+
+func (r *UserResource) Validate(context smolder.APIContext, data interface{}, request *restful.Request) error {
+	return nil
+}

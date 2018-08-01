@@ -37,3 +37,7 @@ func (r *VoteResource) Reads() interface{} {
 func (r *VoteResource) Returns() interface{} {
 	return VoteResponse{}
 }
+
+func (r *VoteResource) Validate(context smolder.APIContext, data interface{}, request *restful.Request) error {
+	return nil
+}

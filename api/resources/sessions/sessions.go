@@ -83,7 +83,7 @@ func (r *SessionResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *SessionResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+func (r *SessionResource) Post(context smolder.APIContext, data interface{}, request *restful.Request, response *restful.Response) {
 	resp := SessionResponse{}
 	resp.Init(context)
 
@@ -156,4 +156,8 @@ func (r *SessionResource) Reads() interface{} {
 // Returns returns the model that will be returned
 func (r *SessionResource) Returns() interface{} {
 	return SessionResponse{}
+}
+
+func (r *SessionResource) Validate(context smolder.APIContext, data interface{}, request *restful.Request) error {
+	return nil
 }

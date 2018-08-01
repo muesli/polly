@@ -44,7 +44,7 @@ func (r *ProposalResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *ProposalResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+func (r *ProposalResource) Post(context smolder.APIContext, data interface{}, request *restful.Request, response *restful.Response) {
 	authUser := db.User{}
 	if auth, err := context.Authentication(request); err == nil {
 		authUser = auth.(db.User)

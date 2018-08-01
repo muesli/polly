@@ -33,7 +33,7 @@ func (r *ProposalResource) PutParams() []*restful.Parameter {
 }
 
 // Put processes an incoming PUT (update) request
-func (r *ProposalResource) Put(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+func (r *ProposalResource) Put(context smolder.APIContext, data interface{}, request *restful.Request, response *restful.Response) {
 	resp := ProposalResponse{}
 	resp.Init(context)
 

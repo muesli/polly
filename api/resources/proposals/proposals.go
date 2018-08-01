@@ -39,3 +39,7 @@ func (r *ProposalResource) Reads() interface{} {
 func (r *ProposalResource) Returns() interface{} {
 	return ProposalResponse{}
 }
+
+func (r *ProposalResource) Validate(context smolder.APIContext, data interface{}, request *restful.Request) error {
+	return nil
+}

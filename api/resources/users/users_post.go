@@ -34,7 +34,7 @@ func (r *UserResource) PostParams() []*restful.Parameter {
 }
 
 // Post processes an incoming POST (create) request
-func (r *UserResource) Post(context smolder.APIContext, request *restful.Request, response *restful.Response) {
+func (r *UserResource) Post(context smolder.APIContext, data interface{}, request *restful.Request, response *restful.Response) {
 	auth, err := context.Authentication(request)
 	if err != nil || auth.(db.User).ID != 1 {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
