@@ -142,7 +142,7 @@ func (r *SessionResource) Post(context smolder.APIContext, data interface{}, req
 
 // Reads returns the model that will be read by POST, PUT & PATCH operations
 func (r *SessionResource) Reads() interface{} {
-	return SessionPostStruct{}
+	return &SessionPostStruct{}
 }
 
 // Returns returns the model that will be returned

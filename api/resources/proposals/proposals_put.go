@@ -12,11 +12,6 @@ import (
 	"github.com/muesli/smolder"
 )
 
-// ProposalPutStruct holds all values of an incoming PUT request
-type ProposalPutStruct struct {
-	ProposalPostStruct
-}
-
 // PutAuthRequired returns true because all requests need authentication
 func (r *ProposalResource) PutAuthRequired() bool {
 	return true
@@ -37,7 +32,7 @@ func (r *ProposalResource) Put(context smolder.APIContext, data interface{}, req
 	resp := ProposalResponse{}
 	resp.Init(context)
 
-	pps := data.(*ProposalPutStruct)
+	pps := data.(*ProposalPostStruct)
 
 	id, err := strconv.Atoi(request.PathParameter("proposal-id"))
 	if err != nil {
