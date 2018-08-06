@@ -45,16 +45,7 @@ func (r *UserResource) Post(context smolder.APIContext, data interface{}, reques
 		return
 	}
 
-	ups := UserPostStruct{}
-	err = request.ReadEntity(&ups)
-	if err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusBadRequest,
-			false,
-			"Can't parse POST data",
-			"UserResource POST"))
-		return
-	}
+	ups := data.(*UserPostStruct)
 
 	if ups.User.About == "" {
 		ups.User.About = ups.User.Email

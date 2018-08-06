@@ -87,21 +87,12 @@ func (r *SessionResource) Post(context smolder.APIContext, data interface{}, req
 	resp := SessionResponse{}
 	resp.Init(context)
 
-	sps := SessionPostStruct{}
-	err := request.ReadEntity(&sps)
-	if err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusBadRequest,
-			false,
-			"Can't parse POST data",
-			"SessionResource PUT"))
-		return
-	}
+	sps := data.(*SessionPostStruct)
 
 	user := db.User{}
 	if len(sps.Token) > 0 {
-		auth, aerr := context.(*db.PollyContext).GetUserByAccessToken(sps.Token)
-		if aerr != nil {
+		auth, err := context.(*db.PollyContext).GetUserByAccessToken(sps.Token)
+		if err != nil {
 			r.NotFound(request, response)
 			return
 		}
@@ -111,6 +102,7 @@ func (r *SessionResource) Post(context smolder.APIContext, data interface{}, req
 			user.UpdatePassword(context.(*db.PollyContext), sps.Password)
 		}
 	} else {
+		var err error
 		user, err = context.(*db.PollyContext).GetUserByNameAndPassword(sps.Username, sps.Password)
 		if err != nil {
 			smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(

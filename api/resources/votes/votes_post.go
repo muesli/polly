@@ -44,16 +44,7 @@ func (r *VoteResource) Post(context smolder.APIContext, data interface{}, reques
 	resp := VoteResponse{}
 	resp.Init(context)
 
-	pps := VotePostStruct{}
-	err := request.ReadEntity(&pps)
-	if err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusBadRequest,
-			false,
-			"Can't parse POST data",
-			"VoteResource POST"))
-		return
-	}
+	pps := data.(*VotePostStruct)
 
 	pid, err := strconv.Atoi(pps.Vote.Proposal)
 	if err != nil {

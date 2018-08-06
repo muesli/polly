@@ -53,16 +53,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, data interface{}, re
 	resp := ProposalResponse{}
 	resp.Init(context)
 
-	pps := ProposalPostStruct{}
-	err := request.ReadEntity(&pps)
-	if err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusBadRequest,
-			false,
-			"Can't parse POST data",
-			"ProposalResource POST"))
-		return
-	}
+	pps := data.(*ProposalPostStruct)
 
 	proposal := db.Proposal{
 		UserID:       authUser.ID,
@@ -76,7 +67,7 @@ func (r *ProposalResource) Post(context smolder.APIContext, data interface{}, re
 		Starts:       pps.Proposal.Starts,
 		FinishedDate: pps.Proposal.FinishedDate,
 	}
-	err = proposal.Save(context.(*db.PollyContext))
+	err := proposal.Save(context.(*db.PollyContext))
 	if err != nil {
 		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
 			http.StatusInternalServerError,

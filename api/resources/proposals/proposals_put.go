@@ -37,16 +37,7 @@ func (r *ProposalResource) Put(context smolder.APIContext, data interface{}, req
 	resp := ProposalResponse{}
 	resp.Init(context)
 
-	pps := ProposalPutStruct{}
-	err := request.ReadEntity(&pps)
-	if err != nil {
-		smolder.ErrorResponseHandler(request, response, smolder.NewErrorResponse(
-			http.StatusBadRequest,
-			false,
-			"Can't parse PUT data",
-			"ProposalResource PUT"))
-		return
-	}
+	pps := data.(*ProposalPutStruct)
 
 	id, err := strconv.Atoi(request.PathParameter("proposal-id"))
 	if err != nil {
